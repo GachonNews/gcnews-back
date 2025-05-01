@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  strike-server:
+    build: .
+    container_name: quiz-server
+    ports:
+      - "9003:9003"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    networks:
+      - quiz_net
+networks:
+  quiz_net:
+    driver: bridge

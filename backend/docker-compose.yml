@@ -1,0 +1,130 @@
+services:
+  db:
+      image: mysql:8.0
+      container_name: my-mysql
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: 1234
+        MYSQL_DATABASE: mydb
+        MYSQL_USER: myuser
+        MYSQL_PASSWORD: 1234
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./mysql-data:/var/lib/mysql
+      # (옵션) 한글/UTF-8 설정
+      command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      - eureka-server
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+    networks:
+      - backend
+
+  crawling-server:
+    build: ./crawling-server
+    container_name: crawling-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9001:9001"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+  news-server:
+    build: ./news-server
+    container_name: news-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9002:9002"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+  quiz-server:
+    build: ./quiz-server
+    container_name: quiz-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9003:9003"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+  recap-server:
+    build: ./recap-server
+    container_name: recap-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9004:9004"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+  strike-server:
+    build: ./strike-server
+    container_name: strike-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9005:9005"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+  summary-server:
+    build: ./summary-server
+    container_name: summary-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9006:9006"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+  user-info-server:
+    build: ./user-info-server
+    container_name: user-info-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "9007:9007"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

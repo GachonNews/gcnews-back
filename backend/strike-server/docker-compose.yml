@@ -1,0 +1,13 @@
+services:
+  strike-server:
+    build: .
+    container_name: strike-server
+    ports:
+      - "9005:9005"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    networks:
+      - strike_net
+networks:
+  strike_net:
+    driver: bridge

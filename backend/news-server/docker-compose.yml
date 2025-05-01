@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  strike-server:
+    build: .
+    container_name: news-server
+    ports:
+      - "9002:9002"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    networks:
+      - news_net
+networks:
+  news_net:
+    driver: bridge

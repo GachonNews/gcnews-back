@@ -1,0 +1,66 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        - id: crawling-service
+          uri: lb://CRAWLING-SERVER
+          predicates:
+            - Path=/api/crawling/**
+        - id: news-service
+          uri: lb://NEWS-SERVER
+          predicates:
+            - Path=/api/news/**
+        - id: quiz-service
+          uri: lb://QUIZ-SERVER
+          predicates:
+            - Path=/api/quiz/**
+        - id: recap-service
+          uri: lb://RECAP-SERVER
+          predicates:
+            - Path=/api/recap/**
+        - id: strike-service
+          uri: lb://STRIKE-SERVER
+          predicates:
+            - Path=/api/strike/**
+        - id: summary-service
+          uri: lb://SUMMARY-SERVER
+          predicates:
+            - Path=/api/summary/**
+        - id: user-info-service
+          uri: lb://USER-INFO-SERVER
+          predicates:
+            - Path=/api/user-info/**
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders: "*"
+            allowCredentials: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.server: DEBUG

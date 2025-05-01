@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  strike-server:
+    build: .
+    container_name: summary-server
+    ports:
+      - "9006:9006"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    networks:
+      - summary_net
+networks:
+  summary_net:
+    driver: bridge
