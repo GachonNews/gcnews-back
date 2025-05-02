@@ -1,13 +1,40 @@
+version: '3.8'
+
 services:
-  strike-server:
+  db:
+    image: mysql:8.0
+    container_name: my-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d   # ← 여기!
+    networks:
+      - crawling_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-umyuser", "-p1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  crawling-server:
     build: .
     container_name: crawling-server
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "9001:9001"
     environment:
       - SPRING_PROFILES_ACTIVE=local
     networks:
       - crawling_net
+    command: ["java", "-jar", "app.jar", "--spring.batch.job.names=newsCrawlingJob"]
+
 networks:
   crawling_net:
     driver: bridge
