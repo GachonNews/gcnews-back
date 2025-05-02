@@ -29,6 +29,7 @@ public class News {
     @Column(name = "upload_at")
     private java.time.LocalDateTime uploadAt;  // 뉴스 날짜/작성일시
 
+    @Column(columnDefinition = "TEXT")
     private String content;              // 본문
 
     private Integer views;               // 조회수(필요시)
