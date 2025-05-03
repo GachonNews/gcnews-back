@@ -1,2 +1,46 @@
-/build
+### 빌드 산출물 ###
+/build/
+/bin/
+/out/
+/target/
 *.jar
+*.war
+*.ear
+*.class
+
+### IDE 설정 파일 ###
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Eclipse
+.settings/
+.classpath
+.project
+.metadata
+.springBeans
+
+# VS Code
+.vscode/
+.code-workspace
+
+### 로그 파일 ###
+*.log
+log/
+logs/
+
+### 임시 파일 ###
+.gradle/
+gradle-app.setting
+.gradletasknamecache
+*~
+.DS_Store
+*.swp
+*.bak
+
+### 환경 설정 ###
+application-local.yml
+application-local.properties

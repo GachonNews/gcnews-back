@@ -13,14 +13,21 @@ repositories {
 }
 
 dependencies {
+    // 기존 설정 유지
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    // JPA 사용 시
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // DB 드라이버 (예: MySQL)
-    implementation 'mysql:mysql-connector-java:8.0.33'    // 기타 의존성 (ex: lombok)
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'org.springframework.kafka:spring-kafka' // ✅ Spring Boot 버전에 맞는 Kafka 자동 선택
+
+    // Jackson 추가 (필수)
+    implementation 'com.fasterxml.jackson.core:jackson-databind' 
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // LocalDateTime 지원
+    
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
