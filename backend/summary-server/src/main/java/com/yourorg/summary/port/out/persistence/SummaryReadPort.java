@@ -3,5 +3,5 @@ import com.yourorg.summary.domain.entity.Summary;
 import java.util.Optional;
 
 public interface SummaryReadPort {
-    Optional<Summary> SummaryRequest(Long newsId); // "load" → "find"로 변경
+    Optional<Summary> SummaryRequest(Long crawlingId); // "load" → "find"로 변경
 }

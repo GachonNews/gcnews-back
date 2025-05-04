@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryRequestDto {
-     private Long newsId;
-     private String content;
+     private Long crawlingId;
+     private String summaryContent;
 }

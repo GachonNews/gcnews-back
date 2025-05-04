@@ -21,18 +21,15 @@ public class SummaryJobService implements SummaryJobPort {
         String originalContent = summary.getContent(); // ✅ Summary 객체 분해
         
         // 1. 외부 API를 통해 요약 생성
-        String summaryText = geminiApiPort.getSummaryFromGpt(originalContent);
+        String summaryContent = geminiApiPort.getSummaryFromGpt(originalContent);
         
+        summary.setSummaryContent(summaryContent);
+
         // 2. 도메인 규칙 적용
         // ✅ 새로운 Summary 객체 생성 (원본/요약 동시에 사용)
-        System.out.println(summary.getNewsId() + " 요약 완료 \n" + summaryText);
-        Summary newSummary = new Summary(
-            summary.getNewsId(),  // ✅ 기존 Summary의 ID 사용?
-            summary.getContent(),  // ✅ 기존 Summary의 Content 사용?
-            summaryText  // ✅ 기존 Summary와 다른 변수명을 사용?
-        );
-        
+        System.out.println(summary.getSummaryContent() + " 요약 제작 완료 \n");
+
         // 3. 저장
-        summarySavePort.saveSummary(newSummary); // ✅ void 반환값 처리
+        summarySavePort.saveSummary(summary); // ✅ void 반환값 처리
     }
 }

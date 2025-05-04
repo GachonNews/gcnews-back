@@ -22,7 +22,7 @@
 //     public void deliverSummary(Summary summary) {
 //         // ✅ Domain → Gateway DTO 변환
 //         SummaryDeliveryDto dto = new SummaryDeliveryDto(
-//             summary.getNewsId(),
+//             summary.getArticleId(),
 //             summary.getSummaryContent()
 //         );
 
@@ -59,8 +59,7 @@ public class SummaryDeliveryAdapter implements SummaryDeliveryPort {
     public void deliverSummary(Summary summary) {
         // Domain → DTO 변환
         Summary dto = new Summary(
-            summary.getNewsId(),
-            summary.getContent(),
+            summary.getCrawlingId(),
             summary.getSummaryContent() // content 필드에 매핑
         );
         
@@ -73,8 +72,7 @@ public class SummaryDeliveryAdapter implements SummaryDeliveryPort {
             📌 요약 내용: {}
             =================================================
             """, 
-            dto.getNewsId(), 
-            dto.getContent(),
+            dto.getCrawlingId(), 
             dto.getSummaryContent() // getSummary() → getContent() 수정
         );
     }

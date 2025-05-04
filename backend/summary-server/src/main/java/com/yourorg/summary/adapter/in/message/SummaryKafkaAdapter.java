@@ -28,9 +28,9 @@ public class SummaryKafkaAdapter {
             // ✅ 메시지 → DTO 역직렬화
             SummaryResponseDto dto = objectMapper.readValue(rawMessage, SummaryResponseDto.class);
             // ✅ DTO → 도메인 객체 변환
-            Summary summary = new Summary(dto.getNewsId(), dto.getContent(), null);
+            Summary summary = new Summary(dto.getCrawlingId(), dto.getContent(), null);
             
-            System.out.println("📥 수신된 요약: {}"+ summary.getNewsId() + " " + summary.getContent());
+            System.out.println("📥 수신된 요약: {}"+ summary.getCrawlingId() + " " + summary.getContent());
             
             // ✅ 포트 인터페이스 호출 (비즈니스 로직 실행)
             summaryJobPort.requestSummaryJob(summary); // ✅ 인터페이스 메서드 호출

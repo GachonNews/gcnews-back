@@ -11,9 +11,9 @@ public class SummaryApiAdapter {
 
     private final SummaryApiPort summaryApiPort;
 
-    @GetMapping("/{newsId}")
-    public String getSummary(@PathVariable Long newsId) {
-        summaryApiPort.SummaryRequest(newsId);
+    @GetMapping("/{crawlingId}")
+    public String getSummary(@PathVariable Long crawlingId) {
+        summaryApiPort.SummaryRequest(crawlingId);
         return "조회가 시작되었습니다.";
     }
 }

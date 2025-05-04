@@ -25,4 +25,13 @@ public class KafkaConfig {
                 .compact()
                 .build();
     }
+
+    @Bean
+    public NewTopic articleTopic() {
+        return TopicBuilder.name("article-topic")
+                .partitions(3)
+                .replicas(1)
+                .compact()
+                .build();
+    }
 }

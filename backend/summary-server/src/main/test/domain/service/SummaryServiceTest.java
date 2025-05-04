@@ -49,12 +49,12 @@ class SummaryServiceTest {
     @Test
     void 요약_조회_및_전송_확인() {
         // Given
-        Long newsId = 1L;
-        Summary expectedSummary = new Summary(newsId, "요약 결과");
-        when(summaryReadPort.findByNewsId(newsId)).thenReturn(Optional.of(expectedSummary));
+        Long articleId = 1L;
+        Summary expectedSummary = new Summary(articleId, "요약 결과");
+        when(summaryReadPort.findByArticleId(articleId)).thenReturn(Optional.of(expectedSummary));
 
         // When
-        Optional<Summary> result = summaryService.findSummaryByNewsId(newsId);
+        Optional<Summary> result = summaryService.findSummaryByArticleId(articleId);
 
         // Then
         assertTrue(result.isPresent());

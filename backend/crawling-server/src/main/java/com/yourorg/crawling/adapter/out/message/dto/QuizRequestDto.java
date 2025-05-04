@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuizRequestDto {
-     private Long newsId;
+     private Long crawlingId;
      private String content;
 }

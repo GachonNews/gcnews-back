@@ -18,5 +18,6 @@ public class MySQLSummaryWriteAdapter implements SummarySavePort {
     @Override
     public void saveSummary(Summary summary) {
         summaryRepository.save(summary);
+        System.out.println("📤 요약 정보 저장 완료");
     }
 }

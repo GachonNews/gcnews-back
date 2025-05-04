@@ -13,15 +13,25 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    // JPA 사용 시
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // DB 드라이버 (예: MySQL)
-    implementation 'mysql:mysql-connector-java:8.0.33'    // 기타 의존성 (ex: lombok)
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // === 스프링 핵심 라이브러리 ===
+    implementation 'org.springframework.boot:spring-boot-starter-web'       // REST API, 웹 애플리케이션 구현
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'  // 서비스 디스커버리 클라이언트
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'   // JPA 데이터 액세스
+    implementation 'mysql:mysql-connector-java:8.0.33'                      // MySQL 데이터베이스 드라이버
+
+    // === 메시징 시스템 ===
+    implementation 'org.springframework.kafka:spring-kafka'                 // 카프카 메시징 통합
+
+    // === JSON 처리 라이브러리 ===
+    implementation 'com.fasterxml.jackson.core:jackson-databind'           // JSON 직렬화/역직렬화
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // Java 8 날짜/시간 타입 지원
+
+    // === 개발 도구 ===
+    compileOnly 'org.projectlombok:lombok'                                 // 코드 생성 어노테이션(@Getter, @Setter 등)
+    annotationProcessor 'org.projectlombok:lombok'                         // 롬복 어노테이션 처리기
+
+    // === 테스트 도구 ===
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // 단위 및 통합 테스트 지원
 }
 
 dependencyManagement {

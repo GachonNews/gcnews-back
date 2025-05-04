@@ -15,8 +15,8 @@ public class MySQLSummaryReadAdapter implements SummaryReadPort {
     private final SummaryJPARepository summaryRepository;
 
     @Override
-    public Optional<Summary> SummaryRequest(Long newsId) { // ✅ Optional 반환
-        System.out.println("📥 전달 요청: " + newsId);
-        return summaryRepository.findById(newsId); // ✅ findByNewsId 메서드 사용
+    public Optional<Summary> SummaryRequest(Long crawlingId) { // ✅ Optional 반환
+        System.out.println("📥 전달 요청: " + crawlingId);
+        return summaryRepository.findByCrawlingId(crawlingId); // ✅ findByArticleId 메서드 사용
     }
 }
