@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleRequestDto {
-     private Long crawling_id;
+     private Long crawlingId;
      private String title;
      private String category;
      private String content;

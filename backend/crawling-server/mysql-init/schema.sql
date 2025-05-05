@@ -3,9 +3,16 @@ CREATE DATABASE IF NOT EXISTS crawling_platform;
 USE crawling_platform;
 
 CREATE TABLE `Crawling` (
-    `crawling_id` INT NOT NULL AUTO_INCREMENT,
+    `crawling_id` BIGINT NOT NULL AUTO_INCREMENT,
     `title` TEXT NOT NULL,
-    `category`  TEXT NOT NULL,
+    `category` ENUM(
+        'economy',
+        'financial-market',
+        'industry',
+        'distribution',
+        'it',
+        'international'
+    ) NOT NULL,
     `upload_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `content` TEXT NOT NULL,
     `article_link` LONGBLOB,

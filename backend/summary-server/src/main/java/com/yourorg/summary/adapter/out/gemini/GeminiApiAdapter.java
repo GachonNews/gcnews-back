@@ -23,7 +23,7 @@ public class GeminiApiAdapter implements GeminiApiPort {
     private String apiKey;
     
     
-    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent}")
+    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent}")
     private String apiUrl;
     
     @Value("${gemini.api.model:gemini-1.5-pro-latest}")

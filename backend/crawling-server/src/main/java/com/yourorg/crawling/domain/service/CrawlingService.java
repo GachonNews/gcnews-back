@@ -113,7 +113,7 @@ public class CrawlingService implements CrawlingTriggerPort {
                         // Article 객체 생성 및 저장
                         Crawling crawling = new Crawling();
                         crawling.setTitle(title);
-                        crawling.setCategory(subCategoryUrl);
+                        crawling.setCategory(mainCategory);
                         crawling.setContent(content);
                         crawling.setUploadAt(uploadAt);
                         crawling.setArticleLink(articleLink);
@@ -135,9 +135,9 @@ public class CrawlingService implements CrawlingTriggerPort {
 
                         ArticleRequestDto articleRequestDto = new ArticleRequestDto(
                             (long) crawling.getCrawlingId(),
-                            crawling.getContent(),
                             crawling.getTitle(),
                             crawling.getCategory(),
+                            crawling.getContent(),
                             crawling.getArticleLink(),
                             crawling.getImgLink(),
                             crawling.getUploadAt().toString()
@@ -153,7 +153,7 @@ public class CrawlingService implements CrawlingTriggerPort {
                         System.out.println("날짜: " + uploadAt);
                         System.out.println("내용: " + content);
 
-                        Thread.sleep(1000000000); // 1초 대기
+                        Thread.sleep(20000);// 1초 대기
                     }
                 } catch (Exception e) {
                     System.err.println("세부 카테고리 처리 실패: " + e.getMessage());

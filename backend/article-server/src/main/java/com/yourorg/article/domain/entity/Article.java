@@ -30,7 +30,7 @@ public class Article {
     @Column(columnDefinition = "TEXT")
     private String content;              // 본문
 
-    private Integer views;               // 조회수(필요시)
+    private Long views;               // 조회수(필요시)
 
     @Column(name = "article_link")
     private String articleLink;             // 뉴스 상세 URL

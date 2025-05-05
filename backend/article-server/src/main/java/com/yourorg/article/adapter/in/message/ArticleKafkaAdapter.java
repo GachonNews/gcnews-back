@@ -29,11 +29,8 @@ public class ArticleKafkaAdapter {
             ArticleResponseDto dto = objectMapper.readValue(rawMessage, ArticleResponseDto.class);
             // ✅ DTO → 도메인 객체 변환
             Article article = new Article(dto.getCrawlingId(), dto.getTitle(), dto.getCategory(), dto.getContent(), dto.getArticleLink(), dto.getImgLink(), dto.getUploadAt());
-            
-            System.out.println("📥 수신된 요약: {}"+ article.getCrawlingId() + " " + article.getContent());
-            
             // ✅ 포트 인터페이스 호출 (비즈니스 로직 실행)
-            articleJobPort.requestArticleJob(article); // ✅ 인터페이스 메서드 호출
+            articleJobPort.responseArticleJob(article); // ✅ 인터페이스 메서드 호출
             
         } catch (Exception e) {
             log.error("메시지 처리 실패: {}", e.getMessage());
