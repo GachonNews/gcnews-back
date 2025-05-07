@@ -1,6 +1,6 @@
 -- 001-create-database.sql
-CREATE DATABASE IF NOT EXISTS crawling_platform;
-USE crawling_platform;
+CREATE DATABASE IF NOT EXISTS crawling_db;
+USE crawling_db;
 
 CREATE TABLE `Crawling` (
     `crawling_id` BIGINT NOT NULL AUTO_INCREMENT,

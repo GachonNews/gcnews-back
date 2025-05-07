@@ -11,7 +11,7 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import com.yourorg.article.adapter.in.message.dto.ArticleResponseDto;
+import com.yourorg.article.adapter.in.message.dto.ArticleConsumerDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,10 +21,10 @@ import java.util.Map;
 public class KafkaConfig {
 
     @Bean
-    public ConsumerFactory<String, ArticleResponseDto> consumerFactory() {
+    public ConsumerFactory<String, ArticleConsumerDto> consumerFactory() {
         // 1. 명시적 DTO 타입 지정
-        JsonDeserializer<ArticleResponseDto> deserializer = 
-            new JsonDeserializer<>(ArticleResponseDto.class);
+        JsonDeserializer<ArticleConsumerDto> deserializer = 
+            new JsonDeserializer<>(ArticleConsumerDto.class);
         
         deserializer.addTrustedPackages("com.yourorg.*");
 
@@ -35,7 +35,7 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         // 3. ErrorHandlingDeserializer로 래핑
-        ErrorHandlingDeserializer<ArticleResponseDto> errorHandlingDeserializer = 
+        ErrorHandlingDeserializer<ArticleConsumerDto> errorHandlingDeserializer = 
             new ErrorHandlingDeserializer<>(deserializer);
 
         return new DefaultKafkaConsumerFactory<>(
@@ -46,8 +46,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ArticleResponseDto> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ArticleResponseDto> factory = 
+    public ConcurrentKafkaListenerContainerFactory<String, ArticleConsumerDto> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ArticleConsumerDto> factory = 
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setCommonErrorHandler(new DefaultErrorHandler());

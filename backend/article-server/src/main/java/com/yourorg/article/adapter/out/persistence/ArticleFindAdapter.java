@@ -40,4 +40,13 @@ public class ArticleFindAdapter implements ArticleFindPort {
     public boolean existsByCrawlingId(Long crawlingId) {
         return articleRepository.existsByCrawlingId(crawlingId);
     }
+    @Override
+    public List<Article> findTop5LikedByUser(Long userId, String yearMonth) {
+        return articleRepository.findLikedTop5(userId, yearMonth); // JPA 커스텀 쿼리
+    }
+
+    @Override
+    public List<Article> findTop5NotLikedByUserAndMonth(Long userId, String yearMonth) {
+        return articleRepository.findNotLikedTop5(userId, yearMonth);
+    }
 }

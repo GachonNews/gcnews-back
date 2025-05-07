@@ -1,6 +1,6 @@
 
-CREATE DATABASE IF NOT EXISTS article_platform;
-USE article_platform;
+CREATE DATABASE IF NOT EXISTS article_db; -- 수정!
+USE article_db;
 
 -- 🔒 Article 테이블 (인덱스 내부 포함)
 CREATE TABLE `Article` (
@@ -8,7 +8,7 @@ CREATE TABLE `Article` (
     `crawling_id` BIGINT NOT NULL,
     `title` TEXT NOT NULL,
     `category` ENUM('economy', 'financial-market', 'industry', 'distribution', 'it', 'international') NOT NULL,
-    `upload_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `upload_at` TEXT NOT NULL,
     `content` TEXT NOT NULL,
     `views` BIGINT NOT NULL DEFAULT 0,
     `article_link` LONGBLOB,

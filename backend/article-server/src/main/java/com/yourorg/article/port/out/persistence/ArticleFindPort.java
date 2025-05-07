@@ -9,4 +9,6 @@ public interface ArticleFindPort {
     List<Article> findByCrawlingIdIn(List<Long> crawlingIds);
     List<Article> findByCrawlingId(Long crawlingId);
     boolean existsByCrawlingId(Long crawlingId);
+    List<Article> findTop5NotLikedByUserAndMonth(Long userId, String yearMonth);
+    List<Article> findTop5LikedByUser(Long userId, String yearMonth);
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleResponseDto {
+public class ArticleConsumerDto {
      private Long crawlingId;
      private String title;
      private String category;
