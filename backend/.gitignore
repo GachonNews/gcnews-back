@@ -40,3 +40,15 @@ application-*.properties
 # 기타
 *.swp
 *.swo
+
+# MySQL socket 파일 무시
+*.sock
+
+# 이미 추가하셨던 MySQL data 폴더들
+backend/article-mysql-data/
+backend/quiz-mysql-data/
+backend/crawling-mysql-data/
+backend/summary-mysql-data/backend/article-mysql-data/
+backend/crawling-mysql-data/
+backend/quiz-mysql-data/
+backend/summary-mysql-data/
