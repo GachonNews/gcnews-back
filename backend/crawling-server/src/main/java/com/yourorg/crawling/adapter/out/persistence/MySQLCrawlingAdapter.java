@@ -20,4 +20,3 @@ public class MySQLCrawlingAdapter implements ArticleSavePort {
         crwalingJpaRepository.save(crawling); // JPA로 실제 DB 저장
     }
 }
-
