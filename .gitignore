@@ -44,3 +44,8 @@ gradle-app.setting
 ### 환경 설정 ###
 application-local.yml
 application-local.properties
+
+backend/article-mysql-data/
+backend/crawling-mysql-data/
+backend/quiz-mysql-data/
+backend/summary-mysql-data/
