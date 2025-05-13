@@ -31,5 +31,11 @@ dependencyManagement {
 }
 
 tasks.named('bootJar') {
-    mainClass.set('com.yourorg.user-info.UserInfoServerApplication')
+    mainClass.set('com.yourorg.user_info.UserInfoServerApplication')
+
+     manifest {
+        attributes(
+            'Start-Class': 'com.yourorg.user_info.UserInfoServerApplication'
+        )
+    }
 }
