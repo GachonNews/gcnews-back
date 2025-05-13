@@ -3,8 +3,16 @@ package com.yourorg.article.adapter.in.web;
 
 import com.yourorg.article.adapter.in.web.dto.ArticleResponse;
 import com.yourorg.article.port.in.web.ArticleLikeApiPort;
+import com.yourorg.article.adapter.in.web.dto.ErrorResponse;
 
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,6 +27,18 @@ public class ArticleLikeApiAdapter {
 
     private final ArticleLikeApiPort articleLikeApiPort;
 
+    @Operation(summary = "좋아요 추가")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(
+            responseCode = "409",
+            description = "중복 좋아요",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     @PostMapping
     public ResponseEntity<?> addLike(
         @RequestParam Long userId,
@@ -31,6 +51,19 @@ public class ArticleLikeApiAdapter {
         ));
     }
 
+
+    @Operation(summary = "좋아요 취소")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "좋아요 기록 없음",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     @DeleteMapping
     public ResponseEntity<?> removeLike(
         @RequestParam Long userId,
