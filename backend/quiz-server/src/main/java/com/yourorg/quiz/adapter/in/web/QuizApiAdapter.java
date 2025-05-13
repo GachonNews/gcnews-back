@@ -25,7 +25,10 @@ public class QuizApiAdapter {
                     "퀴즈를 찾을 수 없습니다: " + crawlingId
                 )
             );
-        return ResponseEntity.ok(dto);
+
+        return ResponseEntity
+            .ok()
+            .body(dto);
     }
 }
 

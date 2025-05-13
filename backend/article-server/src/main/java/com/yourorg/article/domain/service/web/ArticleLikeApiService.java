@@ -6,6 +6,7 @@ import com.yourorg.article.port.in.web.ArticleLikeApiPort;
 import com.yourorg.article.port.out.persistence.UserWritePort;
 import com.yourorg.article.port.out.persistence.ArticleFindPort;
 import com.yourorg.article.adapter.in.web.dto.ArticleResponse;
+import com.yourorg.article.domain.service.exceptionhandler.LikeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class ArticleLikeApiService implements ArticleLikeApiPort {
     @Transactional
     public void addLike(Long userId, Long crawlingId) {
         if(userLikePort.existsByUserIdAndCrawlingId(userId, crawlingId)) {
-            throw new RuntimeException("중복 좋아요 처리 실패");
+            throw new LikeException.DuplicateLikeException("이미 좋아요를 누른 기사입니다: " + crawlingId);
         }
         
         User userLike = new User();
@@ -35,7 +36,7 @@ public class ArticleLikeApiService implements ArticleLikeApiPort {
     @Transactional
     public void removeLike(Long userId, Long crawlingId) {
         User userLike = userLikePort.findById(new UserMapping(userId, crawlingId))
-            .orElseThrow(() -> new RuntimeException("좋아요 기록이 존재하지 않습니다"));
+            .orElseThrow(() -> new LikeException.LikeNotFoundException("좋아요 기록이 존재하지 않습니다: " + crawlingId));
         userLikePort.delete(userLike);
     }
 

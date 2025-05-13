@@ -428,7 +428,7 @@ services:
 
   # ====================== Infrastructure Services ======================
   kafka:
-    image: bitnami/kafka:latestㅋ
+    image: bitnami/kafka:latest
     container_name: my-kafka
     ports:
       - "9092:9092"

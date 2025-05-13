@@ -4,6 +4,7 @@ import com.yourorg.article.adapter.in.web.dto.ArticleResponse;
 import com.yourorg.article.domain.entity.Article;
 import com.yourorg.article.port.in.web.ArticleQueryApiPort;
 import com.yourorg.article.port.out.persistence.ArticleFindPort;
+import com.yourorg.article.domain.service.exceptionhandler.QueryException;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.stream.Collectors;
 public class ArticleQueryApiService implements ArticleQueryApiPort {
 
     private final ArticleFindPort articleFindPort;
-    
+
     // 허용 카테고리 정의 (환경 변수로 분리 가능)
     private static final List<String> ALLOWED_CATEGORIES = List.of(
-        "economy", "financial-market", "industry", 
+        "economy", "financial-market", "industry",
         "distribution", "it", "international"
     );
 
@@ -26,7 +27,7 @@ public class ArticleQueryApiService implements ArticleQueryApiPort {
     @Override
     public List<ArticleResponse> articleAllRequest() {
         List<Article> articles = articleFindPort.findByCategoryInOrderByUploadAtDesc(ALLOWED_CATEGORIES);
-        
+
         Map<String, List<Article>> grouped = articles.stream()
             .collect(Collectors.groupingBy(
                 Article::getCategory,
@@ -48,12 +49,12 @@ public class ArticleQueryApiService implements ArticleQueryApiPort {
     @Override
     public List<ArticleResponse> articleCategoryRequest(String category) {
         validateCategory(category);
-        
+
         List<Article> articles = articleFindPort
             .findTop5ByCategoryOrderByUploadAtDesc(category);
-            
+
         validateEmptyResult(articles, category);
-        
+
         return articles.stream()
             .map(ArticleResponse::fromEntity)
             .collect(Collectors.toList());
@@ -62,22 +63,13 @@ public class ArticleQueryApiService implements ArticleQueryApiPort {
     //-- 검증 메서드들 --//
     private void validateCategory(String category) {
         if (!ALLOWED_CATEGORIES.contains(category)) {
-            throw new InvalidCategoryException("유효하지 않은 카테고리: " + category);
+            throw new QueryException.InvalidCategoryException("유효하지 않은 카테고리: " + category);
         }
     }
 
     private void validateEmptyResult(List<Article> articles, String category) {
         if (articles.isEmpty()) {
-            throw new CategoryNotFoundException("카테고리 [" + category + "]에 기사가 없습니다");
+            throw new QueryException.CategoryNotFoundException("카테고리 [" + category + "]에 기사가 없습니다");
         }
-    }
-
-    //-- 커스텀 예외 --//
-    public static class CategoryNotFoundException extends RuntimeException {
-        public CategoryNotFoundException(String message) { super(message); }
-    }
-
-    public static class InvalidCategoryException extends IllegalArgumentException {
-        public InvalidCategoryException(String message) { super(message); }
     }
 }
