@@ -1,5 +1,8 @@
 package com.yourorg.quiz.port.in.web;
 
+import com.yourorg.quiz.adapter.in.web.dto.QuizResponseDto;
+import java.util.Optional;
+
 public interface QuizApiPort {
-    void QuizRequest(Long crawlingId);  // ✅ 컨트롤러 역할
+    Optional<QuizResponseDto> getQuizByCrawlingId(Long crawlingId);
 }

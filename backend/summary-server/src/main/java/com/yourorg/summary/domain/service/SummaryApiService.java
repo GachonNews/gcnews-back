@@ -1,34 +1,36 @@
 package com.yourorg.summary.domain.service;
 
-import com.yourorg.summary.domain.entity.Summary;
-import com.yourorg.summary.port.out.persistence.SummaryReadPort;
-import com.yourorg.summary.port.out.web.SummaryDeliveryPort;
+import com.yourorg.summary.adapter.in.web.dto.SummaryResponseDto;
 import com.yourorg.summary.port.in.web.SummaryApiPort;
-
-import org.springframework.stereotype.Service;
+import com.yourorg.summary.port.out.persistence.SummaryReadPort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;     // ← 추가
+import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
-@Service
+/**
+ * Web API를 통해 요약 정보를 조회하는 서비스 구현체
+ */
+@Service("summaryApiService")
+@Primary                                       // ← 이 어노테이션을 추가합니다
 @RequiredArgsConstructor
+@Slf4j
 public class SummaryApiService implements SummaryApiPort {
 
-    private final SummaryDeliveryPort summaryDeliveryPort;  // ✅ 아웃포트 주입
-    private final SummaryReadPort summaryReadPort;  // ✅ 아웃포트 주입
+    private final SummaryReadPort readPort;
 
+    /**
+     * 주어진 crawlingId에 대한 요약 정보를 조회합니다.
+     */
     @Override
-    public void SummaryRequest(Long crawlingId) {
-        System.out.println("📥 요약 요청: " + crawlingId);
-
-        // 1. 뉴스 ID로 요약 정보 조회
-        Optional<Summary> summaryOptional = summaryReadPort.SummaryRequest(crawlingId);
-        if (summaryOptional.isPresent()) {
-            Summary summary = summaryOptional.get();
-            // 2. 요약 정보 전달
-            summaryDeliveryPort.deliverSummary(summary);
-        } else {
-            // 3. 요약 정보가 없는 경우 처리
-            System.out.println("No summary found for article ID: " + crawlingId);
-        }
+    public Optional<SummaryResponseDto> getSummaryByCrawlingId(Long crawlingId) {
+        log.info("Service 조회 요청: crawlingId={}", crawlingId);
+        return readPort.findByCrawlingId(crawlingId)
+            .map(entity -> new SummaryResponseDto(
+                entity.getCrawlingId(),
+                entity.getSummaryContent()
+            ));
     }
 }

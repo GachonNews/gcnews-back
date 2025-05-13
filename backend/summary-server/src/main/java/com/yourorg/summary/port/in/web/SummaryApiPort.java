@@ -1,5 +1,11 @@
 package com.yourorg.summary.port.in.web;
 
+import com.yourorg.summary.adapter.in.web.dto.SummaryResponseDto;
+import java.util.Optional;
+
 public interface SummaryApiPort {
-    void SummaryRequest(Long crawlingId);  // ✅ 컨트롤러 역할
+    /**
+     * DB에서 crawlingId로 요약을 조회해 Optional<SummaryResponseDto>로 반환합니다.
+     */
+    Optional<SummaryResponseDto> getSummaryByCrawlingId(Long crawlingId);
 }
