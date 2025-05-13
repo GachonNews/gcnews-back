@@ -1,8 +1,8 @@
 ### 빌드 산출물 ###
-/build/
-/bin/
-/out/
-/target/
+build/
+bin/
+out/
+target/
 *.jar
 *.war
 *.ear
@@ -45,7 +45,5 @@ gradle-app.setting
 application-local.yml
 application-local.properties
 
-backend/article-mysql-data/
-backend/crawling-mysql-data/
-backend/quiz-mysql-data/
-backend/summary-mysql-data/
+*-mysql-data/
+*-mysql-init/
