@@ -8,6 +8,16 @@
 *.ear
 *.class
 
+#* 빌드 관련 파일 ####
+# article-mysql-data
+/build/
+/**/build/
+/article-mysql-data/
+*.ibd
+*.cnf
+*.log
+*.bin
+
 ### IDE 설정 파일 ###
 # IntelliJ
 .idea/
