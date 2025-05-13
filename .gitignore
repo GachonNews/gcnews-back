@@ -1,7 +1,6 @@
 ### 빌드 산출물 ###
 build/
 bin/
-out/
 target/
 *.jar
 *.war
