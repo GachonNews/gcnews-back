@@ -330,9 +330,6 @@
 # networks:
 #   backend:
 #     driver: bridge
-
-version: '3.8'
-
 services:
   # ====================== Database Services ======================
   crawling-db:
@@ -431,7 +428,7 @@ services:
 
   # ====================== Infrastructure Services ======================
   kafka:
-    image: bitnami/kafka:latest
+    image: bitnami/kafka:latestㅋ
     container_name: my-kafka
     ports:
       - "9092:9092"
