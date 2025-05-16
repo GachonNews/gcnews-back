@@ -30,4 +30,11 @@ eureka:
     service-url:
       defaultZone: http://eureka-server:8761/eureka/
     register-with-eureka: true
+<<<<<<< HEAD
     fetch-registry: true
+=======
+    fetch-registry: true
+
+jwt :
+  secret: "dF2j8Qx1Vp9!tBrS4l7Ae6Zp3Yw0LmCiOkJrHuZw9@GqVt5NcXh8PuLa2MqDnRoWcSvXbUcZyQnFgLkJt9EzRkBvWaXcYsUqNmTlPoHrGeDbFhQk"
+>>>>>>> 7fc49fa6e951412d75ddb757a83631c7f42d779b

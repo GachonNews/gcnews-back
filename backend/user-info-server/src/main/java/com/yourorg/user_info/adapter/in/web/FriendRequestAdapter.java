@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
-@RequestMapping("/api/{user_id}/friend")
+@RequestMapping("/api/user-info/{user_id}/friend")
 @RequiredArgsConstructor
 public class FriendRequestAdapter {
     private final FriendRequestPort service;

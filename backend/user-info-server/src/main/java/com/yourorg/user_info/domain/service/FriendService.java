@@ -25,14 +25,6 @@ public class FriendService implements FriendRequestPort {
                 .map(f -> new DeliveryFriendDto(f.getUserId(), f.getFriendId()))
                 .toList();
     }
-
-    // @Override
-    // public DeliveryFriendDto addFriend(Long userId, Long friendId) {
-    //     System.out.println(userId + friendId+"addFriend!!!!!!!!!!!!");
-    //     Friend f = new Friend(userId, friendId);
-    //     Friend saved = writePort.saveFriend(f);
-    //     return new DeliveryFriendDto(saved.getUserId(), saved.getFriendId());
-    // }
  @Override
     public DeliveryFriendDto addFriend(Long userId, DeliveryFriendDto friendDto) {
         Long friendId = friendDto.getFriendId();

@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import com.yourorg.user_info.adapter.out.web.dto.DeliveryUserDto;
 
 @RestController
-@RequestMapping("/api/{user_id}/profile")
+@RequestMapping("/api/user-info/{user_id}/profile")
 @RequiredArgsConstructor
 public class UserRequestAdapter {
     private final UserRequestPort service;
