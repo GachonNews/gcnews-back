@@ -9,13 +9,13 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@IdClass(StrikeMapping.class)
 @Table(name = "Strike")
 public class Strike {
     
     @EmbeddedId
     private StrikeMapping id;
 
+    private Long newsId;
     @Column(name = "is_summarized")
     @JsonProperty("is_summarized")
     private boolean isSummarized;
@@ -27,7 +27,8 @@ public class Strike {
     }
 
     public Strike(Long userId, LocalDate visitDate, Long newsId, boolean isSummarized, boolean isQuized) {
-        this.id = new StrikeMapping(userId, newsId, visitDate);
+        this.id = new StrikeMapping(userId, visitDate);
+        this.newsId = newsId;
         this.isSummarized = isSummarized;
         this.isQuized = isQuized;
     }
@@ -37,11 +38,6 @@ public class Strike {
     @Transient
     public Long getUserId() {
         return id.getUserId();
-    }
-
-    @Transient
-    public Long getNewsId() {
-        return id.getNewsId();
     }
 
     @Transient

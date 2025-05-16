@@ -21,7 +21,6 @@ public class UserRequestAdapter {
 
     @GetMapping
     public ResponseEntity<DeliveryUserDto> getUser(@PathVariable("user_id") Long userId) {
-        System.out.println(service.getUser(userId)+"getUserAdapter%%%%%%%%");
         DeliveryUserDto userDto = service.getUser(userId);
         return userDto== null
             ? ResponseEntity.noContent().build()
@@ -32,7 +31,6 @@ public class UserRequestAdapter {
     public ResponseEntity<DeliveryUserDto> upsertUser(
             @PathVariable("user_id") Long userId,
             @RequestBody DeliveryUserDto userDto) {
-        System.out.println(userId+ userDto.getName()+"addUserAdapter%%%%%%%%%%%");
         DeliveryUserDto dto = service.upsertUser(userId, userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }

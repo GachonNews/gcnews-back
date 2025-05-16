@@ -21,7 +21,6 @@ public class FriendRequestAdapter {
 
     @GetMapping
     public ResponseEntity<List<DeliveryFriendDto>> getFriends(@PathVariable("user_id") Long userId) {
-        System.out.println(service.getFriends(userId)+"getFriendsAdapter%%%%%%%%");
         List<DeliveryFriendDto> list = service.getFriends(userId);
         return list.isEmpty()
             ? ResponseEntity.noContent().build()
@@ -32,7 +31,6 @@ public class FriendRequestAdapter {
     public ResponseEntity<DeliveryFriendDto> addFriend(
             @PathVariable("user_id") Long userId,
             @RequestBody DeliveryFriendDto friendDto) {
-        System.out.println(userId+ friendDto.getFriendId()+"addFriendAdapter%%%%%%%%%%%");
         DeliveryFriendDto dto = service.addFriend(userId, friendDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -41,7 +39,6 @@ public class FriendRequestAdapter {
     public ResponseEntity<DeliveryFriendDto> deleteFriend(
             @PathVariable("user_id") Long userId,
             @PathVariable("friend_id") Long friendId) {
-        // System.out.println(service.deleteFriend(userId, friendId)+"deleteFriend%%%%%%%%%%%");
         DeliveryFriendDto dto = service.deleteFriend(userId, friendId);
         return ResponseEntity.ok(dto);
     }

@@ -115,28 +115,7 @@
 #   #     timeout: 5s
 #   #     retries: 20
 
-#   # strike-db:
-#   #   image: mysql:8.0
-#   #   container_name: strike-mysql
-#   #   restart: always
-#   #   environment:
-#   #     MYSQL_ROOT_PASSWORD: 1234
-#   #     MYSQL_DATABASE: strike_db
-#   #     MYSQL_USER: strike_user
-#   #     MYSQL_PASSWORD: 1234
-#   #   ports:
-#   #     - "3311:3306"
-#   #   volumes:
-#   #     - ./strike-mysql-init:/docker-entrypoint-initdb.d
-#   #     - ./strike-mysql-data:/var/lib/mysql
-#   #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-#   #   networks:
-#   #     - backend
-#   #   healthcheck:
-#   #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ustrike_user", "-p1234"]
-#   #     interval: 5s
-#   #     timeout: 5s
-#   #     retries: 20
+
 
 #   # user-info-db:
 #   #   image: mysql:8.0
@@ -291,23 +270,8 @@
 #   #   networks:
 #   #     - backend
 
-#   # strike-server:
-#   #   build: ./strike-server
-#   #   container_name: strike-server
-#   #   depends_on:
-#   #     - eureka-server
-#   #     - strike-db
-#   #     - kafka
-#   #   ports:
-#   #     - "9005:9005"
-#   #   environment:
-#   #     - EUREKA_SERVER=http://eureka-server:8761/eureka/
-#   #     - SPRING_PROFILES_ACTIVE=prod
-#   #     - SPRING_DATASOURCE_URL=jdbc:mysql://strike-db:3306/strike_db
-#   #     - SPRING_DATASOURCE_USERNAME=strike_user
-#   #     - SPRING_DATASOURCE_PASSWORD=1234
-#   #   networks:
-#   #     - backend
+
+
   
 #   # user-info-server:
 #   #   build: ./user-info-server
@@ -332,97 +296,145 @@
 #     driver: bridge
 services:
   # ====================== Database Services ======================
-  crawling-db:
-    image: mysql:8.0
-    container_name: crawling-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: crawling_db
-      MYSQL_USER: crawling_user
-      MYSQL_PASSWORD: 1234
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./crawling-mysql-init:/docker-entrypoint-initdb.d
-      - ./crawling-mysql-data:/var/lib/mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u crawling_user -p1234 | grep 'mysqld is alive' || exit 1"]
-      interval: 5s
-      timeout: 10s
-      retries: 30
 
-  article-db:
+
+  strike-db:
     image: mysql:8.0
-    container_name: article-mysql
+    container_name: strike-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: article_db
-      MYSQL_USER: article_user
+      MYSQL_DATABASE: strike_db
+      MYSQL_USER: strike_user
       MYSQL_PASSWORD: 1234
     ports:
-      - "3308:3306"
+      - "3311:3306"
     volumes:
-      - ./article-mysql-init:/docker-entrypoint-initdb.d
-      - ./article-mysql-data:/var/lib/mysql
+      - ./strike-mysql-init:/docker-entrypoint-initdb.d
+      - ./strike-mysql-data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uarticle_user", "-p1234"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ustrike_user", "-p1234"]
       interval: 5s
       timeout: 5s
       retries: 20
 
-  summary-db:
+  user-info-db:
     image: mysql:8.0
-    container_name: summary-mysql
+    container_name: user-info-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: summary_db
-      MYSQL_USER: summary_user
+      MYSQL_DATABASE: user_info_db
+      MYSQL_USER: user_info_user
       MYSQL_PASSWORD: 1234
     ports:
-      - "3307:3306"
+      - "3312:3306"
     volumes:
-      - ./summary-mysql-init:/docker-entrypoint-initdb.d
-      - ./summary-mysql-data:/var/lib/mysql
+      - ./user-info-mysql-init:/docker-entrypoint-initdb.d
+      - ./user-info-mysql-data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u summary_user -p1234 | grep 'mysqld is alive' || exit 1"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser_info_user", "-p1234"]
       interval: 5s
-      timeout: 10s
-      retries: 30
+      timeout: 5s
+      retries: 20
 
-  quiz-db:
-    image: mysql:8.0
-    container_name: quiz-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: quiz_db
-      MYSQL_USER: quiz_user
-      MYSQL_PASSWORD: 1234
-    ports:
-      - "3309:3306"
-    volumes:
-      - ./quiz-mysql-init:/docker-entrypoint-initdb.d
-      - ./quiz-mysql-data:/var/lib/mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u quiz_user -p1234 | grep 'mysqld is alive' || exit 1"]
-      interval: 5s
-      timeout: 10s
-      retries: 30
+  # crawling-db:
+  #   image: mysql:8.0
+  #   container_name: crawling-mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 1234
+  #     MYSQL_DATABASE: crawling_db
+  #     MYSQL_USER: crawling_user
+  #     MYSQL_PASSWORD: 1234
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - ./crawling-mysql-init:/docker-entrypoint-initdb.d
+  #     - ./crawling-mysql-data:/var/lib/mysql
+  #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  #   networks:
+  #     - backend
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "mysqladmin ping -h localhost -u crawling_user -p1234 | grep 'mysqld is alive' || exit 1"]
+  #     interval: 5s
+  #     timeout: 10s
+  #     retries: 30
+
+  # article-db:
+  #   image: mysql:8.0
+  #   container_name: article-mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 1234
+  #     MYSQL_DATABASE: article_db
+  #     MYSQL_USER: article_user
+  #     MYSQL_PASSWORD: 1234
+  #   ports:
+  #     - "3308:3306"
+  #   volumes:
+  #     - ./article-mysql-init:/docker-entrypoint-initdb.d
+  #     - ./article-mysql-data:/var/lib/mysql
+  #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  #   networks:
+  #     - backend
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uarticle_user", "-p1234"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 20
+
+  # summary-db:
+  #   image: mysql:8.0
+  #   container_name: summary-mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 1234
+  #     MYSQL_DATABASE: summary_db
+  #     MYSQL_USER: summary_user
+  #     MYSQL_PASSWORD: 1234
+  #   ports:
+  #     - "3307:3306"
+  #   volumes:
+  #     - ./summary-mysql-init:/docker-entrypoint-initdb.d
+  #     - ./summary-mysql-data:/var/lib/mysql
+  #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  #   networks:
+  #     - backend
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "mysqladmin ping -h localhost -u summary_user -p1234 | grep 'mysqld is alive' || exit 1"]
+  #     interval: 5s
+  #     timeout: 10s
+  #     retries: 30
+
+  # quiz-db:
+  #   image: mysql:8.0
+  #   container_name: quiz-mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 1234
+  #     MYSQL_DATABASE: quiz_db
+  #     MYSQL_USER: quiz_user
+  #     MYSQL_PASSWORD: 1234
+  #   ports:
+  #     - "3309:3306"
+  #   volumes:
+  #     - ./quiz-mysql-init:/docker-entrypoint-initdb.d
+  #     - ./quiz-mysql-data:/var/lib/mysql
+  #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  #   networks:
+  #     - backend
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "mysqladmin ping -h localhost -u quiz_user -p1234 | grep 'mysqld is alive' || exit 1"]
+  #     interval: 5s
+  #     timeout: 10s
+  #     retries: 30
 
   
 
@@ -471,88 +483,126 @@ services:
     networks:
       - backend
 
-  crawling-server:
-    build: ./crawling-server
-    container_name: crawling-server
-    depends_on:
-      crawling-db:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
-      kafka:
-        condition: service_healthy
-    ports:
-      - "9001:9001"
-    environment:
-      - EUREKA_SERVER=http://eureka-server:8761/eureka/
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:mysql://crawling-db:3306/crawling_db
-      - SPRING_DATASOURCE_USERNAME=crawling_user
-      - SPRING_DATASOURCE_PASSWORD=1234
-    networks:
-      - backend
 
-  summary-server:
-    build: ./summary-server
-    container_name: summary-server
-    depends_on:
-      summary-db:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
-      kafka:
-        condition: service_healthy
-    ports:
-      - "9006:9006"
-    environment:
-      - EUREKA_SERVER=http://eureka-server:8761/eureka/
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:mysql://summary-db:3306/summary_db
-      - SPRING_DATASOURCE_USERNAME=summary_user
-      - SPRING_DATASOURCE_PASSWORD=1234
-    networks:
-      - backend
-    command: ["java", "-jar", "app.jar", "--spring.batch.job.names=newssummaryJob"]
-
-  quiz-server:
-    build: ./quiz-server
-    container_name: quiz-server
-    depends_on:
-      quiz-db:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
-      kafka:
-        condition: service_healthy
-    ports:
-      - "9003:9003"
-    environment:
-      - EUREKA_SERVER=http://eureka-server:8761/eureka/
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:mysql://quiz-db:3306/quiz_db
-      - SPRING_DATASOURCE_USERNAME=quiz_user
-      - SPRING_DATASOURCE_PASSWORD=1234
-    networks:
-      - backend
-
-  article-server:
-    build: ./article-server
-    container_name: article-server
+  strike-server:
+    build: ./strike-server
+    container_name: strike-server
     depends_on:
       - eureka-server
-      - article-db
+      - strike-db
       - kafka
     ports:
-      - "9002:9002"
+      - "9005:9005"
     environment:
       - EUREKA_SERVER=http://eureka-server:8761/eureka/
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:mysql://article-db:3306/article_db
-      - SPRING_DATASOURCE_USERNAME=article_user
+      - SPRING_DATASOURCE_URL=jdbc:mysql://strike-db:3306/strike_db
+      - SPRING_DATASOURCE_USERNAME=strike_user
       - SPRING_DATASOURCE_PASSWORD=1234
     networks:
       - backend
 
+  user-info-server:
+    build: ./user-info-server
+    container_name: user-info-server
+    depends_on:
+      - eureka-server
+      - user-info-db
+      - kafka
+    ports:
+      - "9007:9007"
+    environment:
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://user-info-db:3306/user_info_db
+      - SPRING_DATASOURCE_USERNAME=user_info_user
+      - SPRING_DATASOURCE_PASSWORD=1234
+    networks:
+      - backend
+
+
+  # crawling-server:
+  #   build: ./crawling-server
+  #   container_name: crawling-server
+  #   depends_on:
+  #     crawling-db:
+  #       condition: service_healthy
+  #     eureka-server:
+  #       condition: service_started
+  #     kafka:
+  #       condition: service_healthy
+  #   ports:
+  #     - "9001:9001"
+  #   environment:
+  #     - EUREKA_SERVER=http://eureka-server:8761/eureka/
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://crawling-db:3306/crawling_db
+  #     - SPRING_DATASOURCE_USERNAME=crawling_user
+  #     - SPRING_DATASOURCE_PASSWORD=1234
+  #   networks:
+  #     - backend
+      
+
+  # summary-server:
+  #   build: ./summary-server
+  #   container_name: summary-server
+  #   depends_on:
+  #     summary-db:
+  #       condition: service_healthy
+  #     eureka-server:
+  #       condition: service_started
+  #     kafka:
+  #       condition: service_healthy
+  #   ports:
+  #     - "9006:9006"
+  #   environment:
+  #     - EUREKA_SERVER=http://eureka-server:8761/eureka/
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://summary-db:3306/summary_db
+  #     - SPRING_DATASOURCE_USERNAME=summary_user
+  #     - SPRING_DATASOURCE_PASSWORD=1234
+  #   networks:
+  #     - backend
+  #   command: ["java", "-jar", "app.jar", "--spring.batch.job.names=newssummaryJob"]
+
+  # quiz-server:
+  #   build: ./quiz-server
+  #   container_name: quiz-server
+  #   depends_on:
+  #     quiz-db:
+  #       condition: service_healthy
+  #     eureka-server:
+  #       condition: service_started
+  #     kafka:
+  #       condition: service_healthy
+  #   ports:
+  #     - "9003:9003"
+  #   environment:
+  #     - EUREKA_SERVER=http://eureka-server:8761/eureka/
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://quiz-db:3306/quiz_db
+  #     - SPRING_DATASOURCE_USERNAME=quiz_user
+  #     - SPRING_DATASOURCE_PASSWORD=1234
+  #   networks:
+  #     - backend
+
+  # article-server:
+  #   build: ./article-server
+  #   container_name: article-server
+  #   depends_on:
+  #     - eureka-server
+  #     - article-db
+  #     - kafka
+  #   ports:
+  #     - "9002:9002"
+  #   environment:
+  #     - EUREKA_SERVER=http://eureka-server:8761/eureka/
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://article-db:3306/article_db
+  #     - SPRING_DATASOURCE_USERNAME=article_user
+  #     - SPRING_DATASOURCE_PASSWORD=1234
+  #   networks:
+  #     - backend
 
 networks:
   backend:
