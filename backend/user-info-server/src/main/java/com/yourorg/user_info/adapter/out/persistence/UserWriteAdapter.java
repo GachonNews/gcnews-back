@@ -16,7 +16,6 @@ public class UserWriteAdapter implements UserWritePort {
     // Example method to save a friend entity
     @Override
     public User saveUser(User user) {
-        System.out.println(user.getUserId()+"saveUser$$$$$$$$$$$$$$$");
         // Use the repository to save the friend entity
         return userJPARepository.save(user);
     }

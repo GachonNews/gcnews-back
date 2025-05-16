@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
-@RequestMapping("/api/{user_id}/friend")
+@RequestMapping("/api/user-info/{user_id}/friend")
 @RequiredArgsConstructor
 public class FriendRequestAdapter {
     private final FriendRequestPort service;
 
     @GetMapping
     public ResponseEntity<List<DeliveryFriendDto>> getFriends(@PathVariable("user_id") Long userId) {
-        System.out.println(service.getFriends(userId)+"getFriendsAdapter%%%%%%%%");
         List<DeliveryFriendDto> list = service.getFriends(userId);
         return list.isEmpty()
             ? ResponseEntity.noContent().build()
@@ -32,7 +31,6 @@ public class FriendRequestAdapter {
     public ResponseEntity<DeliveryFriendDto> addFriend(
             @PathVariable("user_id") Long userId,
             @RequestBody DeliveryFriendDto friendDto) {
-        System.out.println(userId+ friendDto.getFriendId()+"addFriendAdapter%%%%%%%%%%%");
         DeliveryFriendDto dto = service.addFriend(userId, friendDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }

@@ -17,7 +17,6 @@ public class UserReadAdapter implements UserReadPort {
 
     @Override
     public Optional<User> findUser(Long userId) {
-        System.out.println(userRepository.findByUserId(userId)+"findUser#############");
         return userRepository.findByUserId(userId);
     }
 }

@@ -21,23 +21,13 @@ public class FriendService implements FriendRequestPort {
 
     @Override
     public List<DeliveryFriendDto> getFriends(Long userId) {
-        System.out.println(readPort.findFriendList(userId)+"getFriends!!!!!!!!!!!!");
         return readPort.findFriendList(userId).stream()
                 .map(f -> new DeliveryFriendDto(f.getUserId(), f.getFriendId()))
                 .toList();
     }
-
-    // @Override
-    // public DeliveryFriendDto addFriend(Long userId, Long friendId) {
-    //     System.out.println(userId + friendId+"addFriend!!!!!!!!!!!!");
-    //     Friend f = new Friend(userId, friendId);
-    //     Friend saved = writePort.saveFriend(f);
-    //     return new DeliveryFriendDto(saved.getUserId(), saved.getFriendId());
-    // }
  @Override
     public DeliveryFriendDto addFriend(Long userId, DeliveryFriendDto friendDto) {
         Long friendId = friendDto.getFriendId();
-        System.out.println(userId + friendId+"addFriendService!!!!!!!!!!!!");
         Friend f = new Friend(userId, friendId);
         Friend saved = writePort.saveFriend(f);
         return new DeliveryFriendDto(saved.getUserId(), saved.getFriendId());
@@ -45,7 +35,6 @@ public class FriendService implements FriendRequestPort {
     @Override
     @Transactional
     public DeliveryFriendDto deleteFriend(Long userId, Long friendId) {
-        System.out.println(userId + friendId+"deleteFriend!!!!!!!!!!!!");
         Friend existing = readPort.findDeleteFriend(userId, friendId);
         writePort.deleteFriend(existing);
         return new DeliveryFriendDto(existing.getUserId(), existing.getFriendId());

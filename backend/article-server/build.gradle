@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
-    id "org.sonarqube" version "6.0.1.5171"
 }
 
 group = 'com.yourorg'
@@ -42,12 +41,4 @@ dependencyManagement {
 
 tasks.named('bootJar') {
     mainClass.set('com.yourorg.article.ArticleServerApplication')
-}
-
-sonar {
-  properties {
-    property "sonar.projectKey", "GachonNews_gcnews-back"
-    property "sonar.organization", "gachonnews"
-    property "sonar.host.url", "https://sonarcloud.io"
-  }
 }

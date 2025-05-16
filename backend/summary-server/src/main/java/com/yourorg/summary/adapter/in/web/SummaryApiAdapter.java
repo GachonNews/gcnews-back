@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 @RestController
-@RequestMapping("/api/summaries")
+@RequestMapping("/api/summary")
 @RequiredArgsConstructor
 public class SummaryApiAdapter {
 

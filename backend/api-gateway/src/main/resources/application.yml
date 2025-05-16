@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: api-gateway
@@ -9,49 +6,8 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: false
           lowerCaseServiceId: true
-      routes:
-        - id: crawling-service
-          uri: lb://CRAWLING-SERVER
-          predicates:
-            - Path=/api/crawling/**
-        - id: news-service
-          uri: lb://NEWS-SERVER
-          predicates:
-            - Path=/api/news/**
-        - id: quiz-service
-          uri: lb://QUIZ-SERVER
-          predicates:
-            - Path=/api/quiz/**
-        - id: recap-service
-          uri: lb://RECAP-SERVER
-          predicates:
-            - Path=/api/recap/**
-        - id: strike-service
-          uri: lb://STRIKE-SERVER
-          predicates:
-            - Path=/api/strike/**
-        - id: summary-service
-          uri: lb://SUMMARY-SERVER
-          predicates:
-            - Path=/api/summary/**
-        - id: user-info-service
-          uri: lb://USER-INFO-SERVER
-          predicates:
-            - Path=/api/user-info/**
-
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-            allowedHeaders: "*"
-            allowCredentials: true
 
 eureka:
   client:
@@ -64,3 +20,6 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.server: DEBUG
+
+jwt :
+  secret: "dF2j8Qx1Vp9!tBrS4l7Ae6Zp3Yw0LmCiOkJrHuZw9@GqVt5NcXh8PuLa2MqDnRoWcSvXbUcZyQnFgLkJt9EzRkBvWaXcYsUqNmTlPoHrGeDbFhQk"
