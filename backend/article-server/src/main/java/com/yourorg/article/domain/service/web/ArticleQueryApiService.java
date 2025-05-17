@@ -1,6 +1,6 @@
 package com.yourorg.article.domain.service.web;
 
-import com.yourorg.article.adapter.in.web.dto.ArticleResponse;
+import com.yourorg.article.adapter.in.web.dto.response.ArticleResponse;
 import com.yourorg.article.domain.entity.Article;
 import com.yourorg.article.port.in.web.ArticleQueryApiPort;
 import com.yourorg.article.port.out.persistence.ArticleFindPort;

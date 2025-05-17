@@ -31,9 +31,7 @@ public class QuizKafkaAdapter {
             // DTO → 도메인 객체 변환 (필요 없는 필드는 null 처리)
             Quiz quiz = new Quiz(
                 dto.getCrawlingId(), 
-                dto.getContent(), 
-                null,   // 예: answer 필드가 있으면 dto.getAnswer() 등으로 교체
-                null    // 추가 필드도 필요한 경우 dto에서 받아 넣어 주세요
+                dto.getContent()
             );
 
             log.info("📥 수신된 퀴즈: crawlingId={} content={}", 

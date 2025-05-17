@@ -23,9 +23,9 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
-        spring.json.trusted.packages: "com.yourorg.*"
-        # 2. JSON 디폴트 타입도 SummaryConsumerDto 로 설정
+        spring.json.trusted.packages: com.yourorg.summary.adapter.in.message.dto
         spring.json.value.default.type: com.yourorg.summary.adapter.in.message.dto.SummaryConsumerDto
+
 
   gemini:
     api:

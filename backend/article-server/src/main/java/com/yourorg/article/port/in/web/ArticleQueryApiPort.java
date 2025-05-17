@@ -1,7 +1,8 @@
 package com.yourorg.article.port.in.web;
 
-import com.yourorg.article.adapter.in.web.dto.ArticleResponse;
 import java.util.List;
+
+import com.yourorg.article.adapter.in.web.dto.response.ArticleResponse;
 
 public interface ArticleQueryApiPort {
     List<ArticleResponse> articleAllRequest();

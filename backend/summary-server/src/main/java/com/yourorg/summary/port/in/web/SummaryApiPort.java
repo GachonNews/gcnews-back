@@ -1,7 +1,8 @@
 package com.yourorg.summary.port.in.web;
 
-import com.yourorg.summary.adapter.in.web.dto.SummaryResponseDto;
 import java.util.Optional;
+
+import com.yourorg.summary.adapter.in.dto.response.SummaryResponseDto;
 
 public interface SummaryApiPort {
     /**

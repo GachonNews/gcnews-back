@@ -5,10 +5,11 @@ import com.yourorg.article.port.out.persistence.UserWritePort;
 import com.yourorg.article.port.out.persistence.ArticleWritePort;
 import com.yourorg.article.port.out.persistence.ArticleFindPort;
 import com.yourorg.article.domain.entity.User;
-import com.yourorg.article.domain.service.exceptionhandler.ViewException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.yourorg.article.adapter.in.web.dto.response.ArticleViewResult;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +21,15 @@ public class ArticleViewApiService implements ArticleViewPort {
 
     @Override
     @Transactional
-    public void addView(Long userId, Long crawlingId) {
+    public ArticleViewResult addView(Long userId, Long crawlingId) {
         // 1. 기사 존재 여부 확인
         if (!articleFindPort.existsByCrawlingId(crawlingId)) {
-            throw new ViewException.ArticleNotFoundException("기사가 존재하지 않습니다: " + crawlingId);
+            return ArticleViewResult.NOT_FOUND;
         }
 
-        // 2. 중복 조회 확인 (이미 본 경우 예외 발생)
+        // 2. 중복 조회 확인
         if (userWritePort.existsByUserIdAndCrawlingId(userId, crawlingId)) {
-            throw new ViewException.DuplicateViewException("이미 조회한 기사입니다: " + crawlingId);
+            return ArticleViewResult.ALREADY_VIEWED;
         }
 
         // 3. 조회 기록 저장
@@ -36,5 +37,7 @@ public class ArticleViewApiService implements ArticleViewPort {
 
         // 4. 조회수 증가
         articleWritePort.incrementViewCount(crawlingId);
+
+        return ArticleViewResult.SUCCESS;
     }
 }

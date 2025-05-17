@@ -20,6 +20,22 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.server: DEBUG
+    
+springdoc:
+  swagger-ui:
+    urls:
+      - name: ARTICLE-SERVER
+        url: http://localhost:9002/v3/api-docs
+      - name: CRAWLING-SERVER
+        url: http://localhost:9001/v3/api-docs
+      - name: QUIZ-SERVER
+        url: http://localhost:9003/v3/api-docs
+      - name: STRIKE-SERVER
+        url: http://localhost:9005/v3/api-docs
+      - name: SUMMARY-SERVER
+        url: http://localhost:9006/v3/api-docs
+      - name: USER-INFO-SERVER
+        url: http://localhost:9007/v3/api-docs
 
 jwt :
   secret: "dF2j8Qx1Vp9!tBrS4l7Ae6Zp3Yw0LmCiOkJrHuZw9@GqVt5NcXh8PuLa2MqDnRoWcSvXbUcZyQnFgLkJt9EzRkBvWaXcYsUqNmTlPoHrGeDbFhQk"

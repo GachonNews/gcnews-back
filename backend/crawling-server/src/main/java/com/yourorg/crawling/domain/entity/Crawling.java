@@ -17,7 +17,7 @@ public class Crawling {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crawling_id")
-    private int crawlingId;
+    private Long crawlingId;
 
     private String title;                // 제목
 
@@ -34,15 +34,4 @@ public class Crawling {
 
     @Column(name = "img_link")
     private String imgLink;              // 썸네일 이미지 URL
-
-    // 필요하다면 추가 생성자
-    public Crawling(String title, String category, String content,
-                String articleLink, String imgLink, java.time.LocalDateTime uploadAt) {
-        this.title = title;
-        this.category = category;
-        this.content = content;
-        this.articleLink = articleLink;
-        this.imgLink = imgLink;
-        this.uploadAt = uploadAt;
-    }
 }

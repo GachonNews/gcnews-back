@@ -21,12 +21,18 @@ public class JwtAuthorizationFilter implements GlobalFilter, Ordered {
 
     // 인증 예외 경로 패턴
     private static final String[] IGNORE_PATHS = {
-        "/api/public/",         // 공개 API
-        "/api/user-info/login", // 로그인
-        "/api/user-info/signup",// 회원가입
-        "/health",              // 헬스체크
-        "/actuator/health"      // 헬스체크
+        "/swagger-ui.html",
+        "/swagger-ui/index.html",
+        "/swagger-ui/",
+        "/v3/api-docs",
+        "/v3/api-docs/",
+        "/api/public/",
+        "/api/user-info/login",
+        "/api/user-info/signup",
+        "/health",
+        "/actuator/health"
     };
+    
 
     private boolean isIgnored(String path) {
         for (String prefix : IGNORE_PATHS) {
@@ -37,9 +43,7 @@ public class JwtAuthorizationFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        System.out.println("@@@@@@@@@@@" + exchange);
         String path = exchange.getRequest().getURI().getPath();
-        System.out.println("요청 path: " + path);
 
         // 인증 예외 경로는 통과
         if (isIgnored(path)) {
@@ -47,9 +51,7 @@ public class JwtAuthorizationFilter implements GlobalFilter, Ordered {
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
-        System.out.println("인증 헤더: " + authHeader);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             String token = authHeader.replace("Bearer ", "");
             try {
                 Claims claims = Jwts.parserBuilder()

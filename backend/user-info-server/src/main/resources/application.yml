@@ -14,27 +14,12 @@ spring:
   application:
     name: user-info-server # 하이픈 표기법 권장
 
-  kafka:
-    bootstrap-servers: kafka:9092
-    consumer:
-      group-id: user-info-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      properties:
-        spring.json.trusted.packages: "com.yourorg.*"
-        spring.json.value.default.type: com.yourorg.crawling.adapter.out.message.dto.ArticleRequestDto
-
 eureka:
   client:
     service-url:
       defaultZone: http://eureka-server:8761/eureka/
     register-with-eureka: true
-<<<<<<< HEAD
-    fetch-registry: true
-=======
     fetch-registry: true
 
 jwt :
   secret: "dF2j8Qx1Vp9!tBrS4l7Ae6Zp3Yw0LmCiOkJrHuZw9@GqVt5NcXh8PuLa2MqDnRoWcSvXbUcZyQnFgLkJt9EzRkBvWaXcYsUqNmTlPoHrGeDbFhQk"
->>>>>>> 7fc49fa6e951412d75ddb757a83631c7f42d779b

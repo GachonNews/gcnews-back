@@ -2,7 +2,7 @@ package com.yourorg.summary.adapter.out.persistence;
 
 import com.yourorg.summary.adapter.out.repository.SummaryJPARepository;
 import com.yourorg.summary.domain.entity.Summary;
-import com.yourorg.summary.port.out.persistence.SummarySavePort;
+import com.yourorg.summary.port.out.persistence.SummaryWritePort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MySQLSummaryWriteAdapter implements SummarySavePort {
+public class MySQLSummaryWriteAdapter implements SummaryWritePort {
     
     private final SummaryJPARepository summaryRepository;
     

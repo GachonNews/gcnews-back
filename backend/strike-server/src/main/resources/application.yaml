@@ -1,0 +1,22 @@
+# application.yml (최적화 버전)
+spring:
+  datasource:
+    url: jdbc:mysql://db:3306/mydb?useSSL=false&serverTimezone=UTC
+    username: myuser
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  application:
+    name: strike-server # 하이픈 표기법 권장
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true

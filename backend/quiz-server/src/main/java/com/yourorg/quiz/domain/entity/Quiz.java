@@ -28,11 +28,9 @@ public class Quiz {
     private Boolean quizAnswer;
 
     // 생성자
-    public Quiz(Long crawlingId, String Content, String quizContent, Boolean quizAnswer) {
+    public Quiz(Long crawlingId, String Content) {
         this.crawlingId = crawlingId;
         this.content = Content;
-        this.quizContent = quizContent;
-        this.quizAnswer = false;
     }
 
     public Quiz(Long crawlingId, String quizContent, Boolean quizAnswer) {

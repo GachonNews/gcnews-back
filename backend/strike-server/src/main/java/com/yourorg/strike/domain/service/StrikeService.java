@@ -1,7 +1,7 @@
 package com.yourorg.strike.domain.service;
 
+import com.yourorg.strike.adapter.in.dto.DeliveryStrikeDto;
 import com.yourorg.strike.port.in.web.StrikeRequestPort;
-import com.yourorg.strike.adapter.out.web.dto.DeliveryStrikeDto;
 import com.yourorg.strike.port.out.persistence.StrikeReadPort;
 
 import org.springframework.stereotype.Service;

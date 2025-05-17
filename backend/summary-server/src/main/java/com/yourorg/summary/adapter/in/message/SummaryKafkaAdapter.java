@@ -1,6 +1,6 @@
 package com.yourorg.summary.adapter.in.message;
 
-import com.yourorg.summary.adapter.in.message.dto.SummaryConsumerDto;
+import com.yourorg.summary.adapter.in.dto.SummaryConsumerDto;
 import com.yourorg.summary.domain.entity.Summary;
 import com.yourorg.summary.port.in.message.SummaryJobPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
