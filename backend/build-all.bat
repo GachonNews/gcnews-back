@@ -3,7 +3,7 @@ rem =================================================
 rem  각 서버 디렉터리로 이동하여 gradlew clean build 실행
 rem =================================================
 
-set SERVERS=api-gateway eureka-server crawling-server article-server quiz-server recap-server strike-server summary-server user-info-server
+set SERVERS=api-gateway eureka-server crawling-server article-server quiz-server strike-server summary-server user-info-server
 
 for %%D in (%SERVERS%) do (
     echo =========================

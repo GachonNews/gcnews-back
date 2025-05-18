@@ -46,25 +46,58 @@ public class CrawlingService implements CrawlingTriggerPort {
 
             for (String subCategoryUrl : subCategoryUrls) {
                 int page = 1;
-                boolean keepCrawling = true;
+                int lastPage = 1;
+                boolean foundOldPage = false;
 
-                while (keepCrawling) {
+                // 1. 맨 끝(=DB보다 오래된 뉴스가 포함된 페이지) 찾기
+                while (true) {
                     String pageUrl = subCategoryUrl + "?page=" + page;
-                    System.out.println("페이지 진입: " + pageUrl);
+                    System.out.println("[맨끝찾기] 페이지 진입: " + pageUrl);
 
                     try {
                         Document doc = Jsoup.connect(pageUrl).get();
                         Element articleListUl = doc.selectFirst("ul.news-list");
-                        if (articleListUl == null) {
-                            System.out.println("뉴스 리스트 없음, 다음 서브카테고리로");
-                            break;
-                        }
-
+                        if (articleListUl == null) break;
                         Elements liList = articleListUl.select("li");
-                        if (liList.isEmpty()) {
-                            System.out.println("뉴스 항목 없음, 다음 서브카테고리로");
+                        if (liList.isEmpty()) break;
+
+                        // 페이지 내 가장 오래된 뉴스 시각 찾기
+                        LocalDateTime oldestOnPage = liList.stream()
+                            .map(li -> {
+                                Element dateElem = li.selectFirst("p.txt-date");
+                                String dateStr = dateElem != null ? dateElem.text().trim() : null;
+                                return parseDate(dateStr);
+                            })
+                            .filter(d -> d != null)
+                            .min(LocalDateTime::compareTo)
+                            .orElse(null);
+
+                        if (lastUploadAt != null && oldestOnPage != null && !oldestOnPage.isAfter(lastUploadAt)) {
+                            // DB뉴스가 더 최신이면, 이 페이지가 맨 끝
+                            lastPage = page;
+                            foundOldPage = true;
                             break;
                         }
+                        page++;
+                    } catch (Exception e) {
+                        System.err.println("맨끝찾기 실패: " + e.getMessage());
+                        break;
+                    }
+                }
+                if (!foundOldPage) lastPage = page - 1;
+                if (lastPage < 1) lastPage = 1;
+
+                // 2. 맨 끝(lastPage)부터 최신 방향(1페이지)으로 크롤링 및 저장
+                for (int p = lastPage; p >= 1; p--) {
+                    String pageUrl = subCategoryUrl + "?page=" + p;
+                    System.out.println("[저장] 페이지 진입: " + pageUrl);
+
+                    try {
+                        Document doc = Jsoup.connect(pageUrl).get();
+                        Element articleListUl = doc.selectFirst("ul.news-list");
+                        if (articleListUl == null) break;
+                        Elements liList = articleListUl.select("li");
+                        if (liList.isEmpty()) break;
 
                         for (Element li : liList) {
                             // 1. 제목 및 링크
@@ -99,11 +132,9 @@ public class CrawlingService implements CrawlingTriggerPort {
                                 }
                             }
 
-                            // 5. DB 최신 업로드 시각과 비교
+                            // 5. DB 최신 업로드 시각과 비교 (중복 저장 방지)
                             if (lastUploadAt != null && uploadAt != null && !uploadAt.isAfter(lastUploadAt)) {
-                                System.out.println("이미 저장된 최신 뉴스보다 오래됨, 이 서브카테고리 크롤링 종료");
-                                keepCrawling = false;
-                                break;
+                                continue; // 이미 저장된 뉴스보다 오래된 뉴스는 저장하지 않음
                             }
 
                             // 6. 저장 및 메시지 발행
@@ -117,25 +148,20 @@ public class CrawlingService implements CrawlingTriggerPort {
 
                             crawlingRepositoryPort.save(crawling);
 
-                            // 메시지 전송
                             summaryRequestPort.requestSummary(new SummaryRequestDto(
                                 crawling.getCrawlingId(), crawling.getContent()));
-
                             quizRequestPort.requestQuiz(new QuizRequestDto(
                                 crawling.getCrawlingId(), crawling.getContent()));
-
                             articleRequestPort.requestArticle(new ArticleRequestDto(
                                 crawling.getCrawlingId(), crawling.getTitle(), crawling.getCategory(),
                                 crawling.getContent(), crawling.getArticleLink(), crawling.getImgLink(),
                                 crawling.getUploadAt() != null ? crawling.getUploadAt().toString() : ""
                             ));
 
-                            // 로그 출력
                             System.out.println("뉴스 저장: " + title + " | " + uploadAt + " | " + articleLink);
 
                             Thread.sleep(5000); // 5초 대기 (API 차단 방지)
                         }
-                        page++;
                     } catch (Exception e) {
                         System.err.println("페이지 크롤링 실패: " + e.getMessage());
                         break;

@@ -194,9 +194,12 @@ services:
     build: ./strike-server
     container_name: strike-server
     depends_on:
-      - eureka-server
-      - strike-db
-      - kafka
+      strike-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      kafka:
+        condition: service_healthy
     ports:
       - "9005:9005"
     environment:
@@ -212,9 +215,12 @@ services:
     build: ./user-info-server
     container_name: user-info-server
     depends_on:
-      - eureka-server
-      - user-info-db
-      - kafka
+      user-info-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      kafka:
+        condition: service_healthy
     ports:
       - "9007:9007"
     environment:
@@ -296,9 +302,12 @@ services:
     build: ./article-server
     container_name: article-server
     depends_on:
-      - eureka-server
-      - article-db
-      - kafka
+      article-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      kafka:
+        condition: service_healthy
     ports:
       - "9002:9002"
     environment:

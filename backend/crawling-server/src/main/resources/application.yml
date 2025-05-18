@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://db:3306/mydb
+    url: jdbc:mysql://crawling-mysql:3306/mydb?useSSL=false&serverTimezone=UTC
     username: myuser
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -8,7 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
 
   application:
     name: crawling-server
@@ -20,6 +20,12 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     properties:
       spring.json.trusted.packages: "com.yourorg.common.dto"
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
 
 eureka:
   client:

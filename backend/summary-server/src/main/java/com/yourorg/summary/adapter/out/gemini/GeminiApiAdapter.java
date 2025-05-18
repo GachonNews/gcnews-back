@@ -23,10 +23,10 @@ public class GeminiApiAdapter implements GeminiApiPort {
     private String apiKey;
     
     
-    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent}")
+    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lte-latest:generateContent}")
     private String apiUrl;
     
-    @Value("${gemini.api.model:gemini-1.5-pro-latest}")
+    @Value("${gemini.api.model:gemini-2.0-flash-lte-latest}")
     private String model; // ✅ 공식 모델명 사용
     
     private final RestTemplate restTemplate;
@@ -45,9 +45,9 @@ public class GeminiApiAdapter implements GeminiApiPort {
             
                 // ▶▶▶▶▶ 추가: 요청 지시사항 프롬프트에 포함 ◀◀◀◀◀
             String instruction = """
-                당신은 뉴스 요약 장인입니다. 다음 뉴스를 반드시 세 줄로 요약하고, 
+                당신은 뉴스 요약 전문가입니다. 다음 뉴스를 반드시 세 줄로 요약하고, 
                 마지막에 '핵심 한 문장:'으로 시작하는 키워드 문장을 추가해주세요.
-                그리고 한 줄마다 엔터를 넣어주세요.
+                그리고 요약한 뉴스 한 줄마다 줄바꿈을 넣어주세요.
                 뉴스 내용:
                 """;
             String fullContent = instruction + content;
