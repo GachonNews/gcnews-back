@@ -27,9 +27,9 @@ spring:
 
   gemini:
     api:
-      key: ${{secrets.GEMINI_API_KEY2}}
-      url: ${{secrets.GEMINI_API_URL}}
-      model: ${{secrets.GEMINI_API_MODEL}}
+      key: ${{GEMINI_API_KEY2}}
+      url: ${{GEMINI_API_URL}}
+      model: ${{GEMINI_API_MODEL}}
 
 eureka:
   client:
