@@ -28,8 +28,8 @@ spring:
   gemini:
     api:
       key: "AIzaSyCBap_rAhC8lGEdK8261Sq8QzNYhjxiqy4"  # 임시 테스트용 실제 키 입력
-      url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lte-latest:generateContent"
-      model: "gemini-2.0-flash-lte-latest" 
+      url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent"
+      model: "gemini-2.0-flash-lite" 
 
 eureka:
   client:

@@ -158,7 +158,7 @@ public class ArticleLikeApiAdapter {
                           "category": "business"
                         }
                       ],
-                      "message": null
+                      "message": 전송 완료
                     }
                     """
                 )

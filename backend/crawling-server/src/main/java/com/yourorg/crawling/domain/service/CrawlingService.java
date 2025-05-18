@@ -73,7 +73,6 @@ public class CrawlingService implements CrawlingTriggerPort {
                             .orElse(null);
 
                         if (lastUploadAt != null && oldestOnPage != null && !oldestOnPage.isAfter(lastUploadAt)) {
-                            // DB뉴스가 더 최신이면, 이 페이지가 맨 끝
                             lastPage = page;
                             foundOldPage = true;
                             break;
@@ -86,6 +85,10 @@ public class CrawlingService implements CrawlingTriggerPort {
                 }
                 if (!foundOldPage) lastPage = page - 1;
                 if (lastPage < 1) lastPage = 1;
+
+                // ====== 3페이지까지만 제한(기사 수는 제한 X) ======
+                if (lastPage > 3) lastPage = 3;
+                // =================================================
 
                 // 2. 맨 끝(lastPage)부터 최신 방향(1페이지)으로 크롤링 및 저장
                 for (int p = lastPage; p >= 1; p--) {
@@ -134,7 +137,7 @@ public class CrawlingService implements CrawlingTriggerPort {
 
                             // 5. DB 최신 업로드 시각과 비교 (중복 저장 방지)
                             if (lastUploadAt != null && uploadAt != null && !uploadAt.isAfter(lastUploadAt)) {
-                                continue; // 이미 저장된 뉴스보다 오래된 뉴스는 저장하지 않음
+                                continue;
                             }
 
                             // 6. 저장 및 메시지 발행
@@ -160,7 +163,7 @@ public class CrawlingService implements CrawlingTriggerPort {
 
                             System.out.println("뉴스 저장: " + title + " | " + uploadAt + " | " + articleLink);
 
-                            Thread.sleep(5000); // 5초 대기 (API 차단 방지)
+                            Thread.sleep(60 * 1000); // 5초 대기 (API 차단 방지)
                         }
                     } catch (Exception e) {
                         System.err.println("페이지 크롤링 실패: " + e.getMessage());
@@ -188,12 +191,10 @@ public class CrawlingService implements CrawlingTriggerPort {
                     }
                 }
             } else {
-                // 만약 section__gnb가 없다면 메인 카테고리 자체만 크롤링
                 subCategoryUrls.add(categoryUrl);
             }
         } catch (Exception e) {
             System.err.println("서브카테고리 수집 실패: " + e.getMessage());
-            // 최소한 메인 카테고리라도 크롤링
             subCategoryUrls.add(categoryUrl);
         }
         return subCategoryUrls;
@@ -203,7 +204,6 @@ public class CrawlingService implements CrawlingTriggerPort {
     private LocalDateTime parseDate(String dateStr) {
         if (dateStr == null) return null;
         try {
-            // 예시: "2024.05.18 13:20"
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
             return LocalDateTime.parse(dateStr, formatter);
         } catch (Exception e) {

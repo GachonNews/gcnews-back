@@ -49,7 +49,7 @@ public class ArticleApiAdapter {
                             "uploadAt": "2025-05-13T14:05"
                             }
                         ],
-                        "message": null
+                        "message": 전송 완료
                         }
                     """
                 )

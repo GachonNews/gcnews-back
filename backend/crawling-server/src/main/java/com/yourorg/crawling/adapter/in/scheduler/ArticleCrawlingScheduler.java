@@ -16,7 +16,7 @@ public class ArticleCrawlingScheduler {
     private final JobLauncher jobLauncher;
     private final Job articleCrawlingJob;
 
-    @Scheduled(fixedDelay = 60000) // 60초(1분)마다 실행
+    @Scheduled(fixedDelay = 10 * 60 * 1000) // 60초(1분)마다 실행
     public void runJob() throws Exception {
         jobLauncher.run(
             articleCrawlingJob,
