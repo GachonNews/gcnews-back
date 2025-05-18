@@ -1,19 +1,20 @@
 #!/bin/bash
-set -eu  # 에러나면 바로 중단, 미정의 변수 에러
+set -eu  # 에러 발생 시 즉시 중단, 미정의 변수 사용 시 중단
 
-for dir in api-gateway eureka-server crawling-server article-server quiz-server strike-server summary-server user-info-server; do
+# 서버 디렉터리 목록
+SERVERS="api-gateway eureka-server crawling-server article-server quiz-server strike-server summary-server user-info-server"
+
+for dir in $SERVERS; do
     echo "========================="
-    echo "$dir 에 Gradle Wrapper 추가 중..."
+    echo "$dir 에서 Gradle Wrapper(7.5.1) 생성/갱신 중..."
 
     cd "$dir"
 
-    # gradlew가 없으면 시스템에 설치된 gradle 사용 (gradlew가 있으면 실행)
-    if [ -f "./gradlew" ]; then
-        chmod +x ./gradlew
-        ./gradlew wrapper
-    else
-        gradle wrapper
-    fi
+    # gradle wrapper 명령 실행 (gradlew가 있든 없든 항상 7.5.1로 갱신)
+    gradle wrapper --gradle-version 7.5.1
 
     cd ..
 done
+
+echo "========================="
+echo "모든 서버의 Gradle Wrapper(7.5.1) 생성/갱신이 완료되었습니다."
