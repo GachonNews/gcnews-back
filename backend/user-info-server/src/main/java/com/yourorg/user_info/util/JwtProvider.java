@@ -1,5 +1,6 @@
 package com.yourorg.user_info.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,7 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret}") // application.properties에서 주입
+    @Value("${jwt.secret}")
     private String secretKey;
 
     private final long EXPIRATION_MS = 1000 * 60 * 60; // 1시간
@@ -22,5 +23,5 @@ public class JwtProvider {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
                 .compact();
-    }    
+    }
 }

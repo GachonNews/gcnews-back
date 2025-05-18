@@ -3,6 +3,7 @@ package com.yourorg.summary.adapter.in.web;
 import com.yourorg.summary.port.in.web.SummaryApiPort;
 import com.yourorg.summary.adapter.in.dto.response.SummaryResponseDto;
 import com.yourorg.summary.adapter.in.dto.response.OurApiResponse;
+import com.yourorg.summary.util.JwtUtil; // JwtUtil import 필요
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class SummaryApiAdapter {
 
     private final SummaryApiPort summaryApiPort;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "요약 단건 조회")
     @ApiResponses({
@@ -37,7 +42,7 @@ public class SummaryApiAdapter {
                             "status": "success",
                             "data": {
                               "crawlingId": 1,
-                              "summaryContent": "KIEP, 올해 세계 경제 성장률 전망치를 2.7%로 하향 조정했다.\n이는 IMF 전망치(2.8%)보다 낮은 수치이며, 미·중 무역 분쟁 심화 및 미국 자국 우선주의 강화 등이 주요 원인으로 분석된다.\n미국과 중국의 90일 관세 인하 합의는 비정상적인 관세율의 정상화 과정으로 평가되며, 원·달러 환율은 하반기 안정화될 것으로 전망했다.\n\n핵심 한 문장: 미·중 무역분쟁 심화와 미국 자국우선주의로 인해 KIEP는 세계 경제 성장률 전망치를 하향 조정하고, 원달러 환율의 하반기 안정화를 예측했다.\n"
+                              "summaryContent": "KIEP, 올해 세계 경제 성장률 전망치를 2.7%로 하향 조정했다.\\n이는 IMF 전망치(2.8%)보다 낮은 수치이며, 미·중 무역 분쟁 심화 및 미국 자국 우선주의 강화 등이 주요 원인으로 분석된다.\\n미국과 중국의 90일 관세 인하 합의는 비정상적인 관세율의 정상화 과정으로 평가되며, 원·달러 환율은 하반기 안정화될 것으로 전망했다.\\n\\n핵심 한 문장: 미·중 무역분쟁 심화와 미국 자국우선주의로 인해 KIEP는 세계 경제 성장률 전망치를 하향 조정하고, 원달러 환율의 하반기 안정화를 예측했다.\\n"
                             },
                             "message": null
                           }
@@ -68,7 +73,11 @@ public class SummaryApiAdapter {
       value = "/{crawlingId}",
       produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<OurApiResponse<SummaryResponseDto>> getSummary(@PathVariable Long crawlingId) {
+    public ResponseEntity<OurApiResponse<SummaryResponseDto>> getSummary(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long crawlingId) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+
         return summaryApiPort
             .getSummaryByCrawlingId(crawlingId)
             .map(dto ->

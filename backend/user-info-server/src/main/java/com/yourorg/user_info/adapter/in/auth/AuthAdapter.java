@@ -39,7 +39,6 @@ public class AuthAdapter {
                     {
                       "status": "success",
                       "data": {
-                        "userId": 101,
                         "loginId": "arin123",
                         "name": "아린",
                       },
@@ -96,7 +95,6 @@ public class AuthAdapter {
                       "status": "success",
                       "data": {
                         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6...",
-                        "userId": 101,
                       },
                       "message": null
                     }

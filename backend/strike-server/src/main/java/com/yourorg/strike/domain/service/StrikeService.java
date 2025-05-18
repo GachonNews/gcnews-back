@@ -20,7 +20,7 @@ public class StrikeService implements StrikeRequestPort {
     public List<DeliveryStrikeDto> getMonthlyStrikes(Long userId, int year, int month) {
         LocalDate visitDate = LocalDate.of(year, month, 1);
         return readPort.findMonthlyStrikes(userId, visitDate).stream()
-                .map(s -> new DeliveryStrikeDto(s.getUserId(),
+                .map(s -> new DeliveryStrikeDto(
                 s.getNewsId(),
                 s.getVisitDate(),
                 s.isSummarized(),
@@ -32,7 +32,7 @@ public class StrikeService implements StrikeRequestPort {
         LocalDate visitDate = LocalDate.of(year, month, 1);
 
         return readPort.findMonthlyStrikes(friendId, visitDate).stream()
-                .map(s -> new DeliveryStrikeDto(s.getUserId(),
+                .map(s -> new DeliveryStrikeDto(
                 s.getNewsId(),
                 s.getVisitDate(),
                 s.isSummarized(),

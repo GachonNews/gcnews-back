@@ -3,6 +3,7 @@ package com.yourorg.quiz.adapter.in.web;
 import com.yourorg.quiz.adapter.in.web.dto.QuizResponseDto;
 import com.yourorg.quiz.adapter.in.web.dto.OurApiResponse;
 import com.yourorg.quiz.port.in.web.QuizApiPort;
+import com.yourorg.quiz.util.JwtUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class QuizApiAdapter {
 
     private final QuizApiPort quizApiPort;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "퀴즈 단건 조회")
     @ApiResponses({
@@ -65,7 +70,11 @@ public class QuizApiAdapter {
         )
     })
     @GetMapping("/{crawlingId}")
-    public ResponseEntity<OurApiResponse<QuizResponseDto>> getQuizByCrawlingId(@PathVariable Long crawlingId) {
+    public ResponseEntity<OurApiResponse<QuizResponseDto>> getQuizByCrawlingId(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long crawlingId) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+
         return quizApiPort.getQuizByCrawlingId(crawlingId)
             .map(dto ->
                 ResponseEntity.ok(

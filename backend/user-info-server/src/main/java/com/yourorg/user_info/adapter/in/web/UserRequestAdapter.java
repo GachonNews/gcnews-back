@@ -3,8 +3,10 @@ package com.yourorg.user_info.adapter.in.web;
 import com.yourorg.user_info.adapter.in.dto.response.UserResponseDto;
 import com.yourorg.user_info.adapter.in.dto.response.OurApiResponse;
 import com.yourorg.user_info.port.in.web.UserRequestPort;
+import com.yourorg.user_info.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 @RestController
-@RequestMapping("/api/user-info/{user_id}/profile")
+@RequestMapping("/api/user-info/profile")
 @RequiredArgsConstructor
 public class UserRequestAdapter {
     private final UserRequestPort service;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "유저 프로필 조회")
     @ApiResponses({
@@ -66,8 +71,10 @@ public class UserRequestAdapter {
         )
     })
     @GetMapping
-    public ResponseEntity<OurApiResponse<UserResponseDto>> getUser(@PathVariable("user_id") Long userId) {
-        UserResponseDto userDto = service.getUser(userId);
+    public ResponseEntity<OurApiResponse<UserResponseDto>> getUser(
+            @RequestHeader("Authorization") String token) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        UserResponseDto userDto = service.getUser(Long.valueOf(userId));
         if (userDto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new OurApiResponse<>("fail", null, "해당 유저를 찾을 수 없습니다."));
@@ -122,9 +129,10 @@ public class UserRequestAdapter {
     })
     @PostMapping
     public ResponseEntity<OurApiResponse<UserResponseDto>> upsertUser(
-            @PathVariable("user_id") Long userId,
+            @RequestHeader("Authorization") String token,
             @RequestBody UserResponseDto userDto) {
-        UserResponseDto dto = service.upsertUser(userId, userDto);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        UserResponseDto dto = service.upsertUser(Long.valueOf(userId), userDto);
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new OurApiResponse<>("fail", null, "유저 정보를 저장할 수 없습니다."));

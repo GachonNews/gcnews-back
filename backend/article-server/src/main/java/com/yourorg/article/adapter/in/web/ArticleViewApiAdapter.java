@@ -3,6 +3,7 @@ package com.yourorg.article.adapter.in.web;
 import com.yourorg.article.adapter.in.web.dto.response.OurApiResponse;
 import com.yourorg.article.port.in.web.ArticleViewPort;
 import com.yourorg.article.adapter.in.web.dto.response.ArticleViewResult;
+import com.yourorg.article.util.JwtUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleViewApiAdapter {
 
     private final ArticleViewPort articleViewPort;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "기사 조회수 증가")
     @ApiResponses({
@@ -80,8 +85,11 @@ public class ArticleViewApiAdapter {
         )
     })
     @PostMapping
-    public ResponseEntity<OurApiResponse<Void>> addView(@RequestParam Long userId, @RequestParam Long crawlingId) {
-        ArticleViewResult result = articleViewPort.addView(userId, crawlingId);
+    public ResponseEntity<OurApiResponse<Void>> addView(
+            @RequestHeader("Authorization") String token,
+            @RequestParam Long crawlingId) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        ArticleViewResult result = articleViewPort.addView(Long.valueOf(userId), crawlingId);
         switch (result) {
             case SUCCESS:
                 return ResponseEntity.ok(

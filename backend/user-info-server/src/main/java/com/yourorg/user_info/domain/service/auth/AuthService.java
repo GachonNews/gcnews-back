@@ -40,7 +40,7 @@ public class AuthService implements AuthPort {
         // JWT 토큰 생성
         String token = jwtProvider.generateToken(user.getUserId().toString());
 
-        LoginResponseDto dto = new LoginResponseDto(user.getUserId(), token);
+        LoginResponseDto dto = new LoginResponseDto(token);
 
         // 로그인 응답 DTO 반환 (토큰 포함)
         return dto;

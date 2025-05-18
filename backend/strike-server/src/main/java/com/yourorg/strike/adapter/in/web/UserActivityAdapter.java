@@ -3,10 +3,12 @@ package com.yourorg.strike.adapter.in.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.yourorg.strike.adapter.in.dto.DeliveryStrikeDto;
 import com.yourorg.strike.adapter.in.dto.OurApiResponse;
 import com.yourorg.strike.port.in.web.UserActivityPort;
+import com.yourorg.strike.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,11 +20,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 @RestController
-@RequestMapping("/api/recent")
+@RequestMapping("/api/user-info/recent")
 @RequiredArgsConstructor
 public class UserActivityAdapter {
 
     private final UserActivityPort service;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "유저 최근 활동(출석) 등록/수정")
     @ApiResponses({
@@ -39,7 +44,6 @@ public class UserActivityAdapter {
                         "status": "success",
                         "data": [
                             {
-                                "userId": 2,
                                 "newsId": 2,
                                 "visitDate": "2025-05-11",
                                 "summarized": false,
@@ -73,8 +77,10 @@ public class UserActivityAdapter {
     })
     @PostMapping
     public ResponseEntity<OurApiResponse<DeliveryStrikeDto>> upsertUser(
+            @RequestHeader("Authorization") String token,
             @RequestBody DeliveryStrikeDto strikeDto) {
-        DeliveryStrikeDto dto = service.upsertUser(strikeDto.getUserId(), strikeDto);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        DeliveryStrikeDto dto = service.upsertUser(Long.valueOf(userId), strikeDto);
 
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

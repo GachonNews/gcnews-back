@@ -3,8 +3,10 @@ package com.yourorg.user_info.adapter.in.web;
 import com.yourorg.user_info.adapter.in.dto.response.FriendResponseDto;
 import com.yourorg.user_info.adapter.in.dto.response.OurApiResponse;
 import com.yourorg.user_info.port.in.web.FriendRequestPort;
+import com.yourorg.user_info.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,13 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user-info/{user_id}/friend")
+@RequestMapping("/api/user-info/friend")
 @RequiredArgsConstructor
 public class FriendRequestAdapter {
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
     private final FriendRequestPort service;
 
     @Operation(summary = "친구 목록 조회")
@@ -38,8 +44,7 @@ public class FriendRequestAdapter {
                         "status": "success",
                         "data": [
                             {
-                                "userId" : 1,
-                                "friendId": 2,
+                                "friendId": 2
                             }
                         ],
                         "message": null
@@ -67,8 +72,10 @@ public class FriendRequestAdapter {
         )
     })
     @GetMapping
-    public ResponseEntity<OurApiResponse<List<FriendResponseDto>>> getFriends(@PathVariable("user_id") Long userId) {
-        List<FriendResponseDto> list = service.getFriends(userId);
+    public ResponseEntity<OurApiResponse<List<FriendResponseDto>>> getFriends(
+            @RequestHeader("Authorization") String token) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        List<FriendResponseDto> list = service.getFriends(Long.valueOf(userId));
         if (list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(new OurApiResponse<>("success", List.of(), "친구가 없습니다."));
@@ -89,7 +96,6 @@ public class FriendRequestAdapter {
                     {
                         "status": "success",
                         "data": {
-                            "userId" : 1,
                             "friendId": 2
                         },
                         "message": null
@@ -118,9 +124,10 @@ public class FriendRequestAdapter {
     })
     @PostMapping
     public ResponseEntity<OurApiResponse<FriendResponseDto>> addFriend(
-            @PathVariable("user_id") Long userId,
+            @RequestHeader("Authorization") String token,
             @RequestBody FriendResponseDto friendDto) {
-        FriendResponseDto dto = service.addFriend(userId, friendDto);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        FriendResponseDto dto = service.addFriend(Long.valueOf(userId), friendDto);
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new OurApiResponse<>("fail", null, "친구 추가에 실패했습니다."));
@@ -142,7 +149,6 @@ public class FriendRequestAdapter {
                     {
                         "status": "success",
                         "data": {
-                            "userId" : 1,
                             "friendId": 2
                         },
                         "message": null
@@ -171,9 +177,10 @@ public class FriendRequestAdapter {
     })
     @DeleteMapping("/{friend_id}")
     public ResponseEntity<OurApiResponse<FriendResponseDto>> deleteFriend(
-            @PathVariable("user_id") Long userId,
+            @RequestHeader("Authorization") String token,
             @PathVariable("friend_id") Long friendId) {
-        FriendResponseDto dto = service.deleteFriend(userId, friendId);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        FriendResponseDto dto = service.deleteFriend(Long.valueOf(userId), friendId);
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new OurApiResponse<>("fail", null, "해당 친구를 찾을 수 없습니다."));

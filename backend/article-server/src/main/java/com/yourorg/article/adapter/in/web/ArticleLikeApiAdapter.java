@@ -3,6 +3,7 @@ package com.yourorg.article.adapter.in.web;
 import com.yourorg.article.adapter.in.web.dto.response.OurApiResponse;
 import com.yourorg.article.adapter.in.web.dto.response.ArticleResponse;
 import com.yourorg.article.port.in.web.ArticleLikeApiPort;
+import com.yourorg.article.util.JwtUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,10 +13,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,6 +27,9 @@ import java.util.List;
 public class ArticleLikeApiAdapter {
 
     private final ArticleLikeApiPort articleLikeApiPort;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "좋아요 추가")
     @ApiResponses({
@@ -65,10 +70,11 @@ public class ArticleLikeApiAdapter {
     })
     @PostMapping
     public ResponseEntity<OurApiResponse<Void>> addLike(
-        @RequestParam Long userId,
+        @RequestHeader("Authorization") String token,
         @RequestParam Long crawlingId
     ) {
-        boolean added = articleLikeApiPort.addLike(userId, crawlingId);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        boolean added = articleLikeApiPort.addLike(Long.valueOf(userId), crawlingId);
         if (!added) {
             return ResponseEntity.status(409)
                 .header("Like-Status", "duplicated")
@@ -118,10 +124,11 @@ public class ArticleLikeApiAdapter {
     })
     @DeleteMapping
     public ResponseEntity<OurApiResponse<Void>> removeLike(
-        @RequestParam Long userId,
+        @RequestHeader("Authorization") String token,
         @RequestParam Long crawlingId
     ) {
-        boolean removed = articleLikeApiPort.removeLike(userId, crawlingId);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        boolean removed = articleLikeApiPort.removeLike(Long.valueOf(userId), crawlingId);
         if (!removed) {
             return ResponseEntity.status(404)
                 .header("Like-Status", "not_found")
@@ -158,16 +165,19 @@ public class ArticleLikeApiAdapter {
                           "category": "business"
                         }
                       ],
-                      "message": 전송 완료
+                      "message": "전송 완료"
                     }
                     """
                 )
             )
         )
     })
-    @GetMapping("/{userId}")
-    public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getUserLikes(@PathVariable Long userId) {
-        List<ArticleResponse> articles = articleLikeApiPort.getUserLikes(userId);
+    @GetMapping
+    public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getUserLikes(
+        @RequestHeader("Authorization") String token
+    ) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        List<ArticleResponse> articles = articleLikeApiPort.getUserLikes(Long.valueOf(userId));
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .body(new OurApiResponse<>("success", articles, null));

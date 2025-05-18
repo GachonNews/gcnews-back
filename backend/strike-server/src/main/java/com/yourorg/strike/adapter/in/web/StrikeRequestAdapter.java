@@ -2,11 +2,13 @@ package com.yourorg.strike.adapter.in.web;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
 import com.yourorg.strike.adapter.in.dto.DeliveryStrikeDto;
 import com.yourorg.strike.adapter.in.dto.OurApiResponse;
 import com.yourorg.strike.port.in.web.StrikeRequestPort;
+import com.yourorg.strike.util.JwtUtil;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,11 +19,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 @RestController
-@RequestMapping("/api/{user_id}/attendance")
+@RequestMapping("/api/user-info/attendance")
 @RequiredArgsConstructor
 public class StrikeRequestAdapter {
 
     private final StrikeRequestPort service;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Operation(summary = "유저 월별 출석 데이터 조회")
     @ApiResponses({
@@ -39,7 +44,6 @@ public class StrikeRequestAdapter {
                             "status": "success",
                             "data": [
                                 {
-                                "userId": 2,
                                 "newsId": 2,
                                 "visitDate": "2025-05-11",
                                 "summarized": false,
@@ -66,10 +70,11 @@ public class StrikeRequestAdapter {
     })
     @GetMapping
     public ResponseEntity<OurApiResponse<List<DeliveryStrikeDto>>> getMonthlyStrikes(
-            @PathVariable("user_id") Long userId,
+            @RequestHeader("Authorization") String token,
             @RequestParam("year") int year,
             @RequestParam("month") int month) {
-        List<DeliveryStrikeDto> strikes = service.getMonthlyStrikes(userId, year, month);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        List<DeliveryStrikeDto> strikes = service.getMonthlyStrikes(Long.valueOf(userId), year, month);
 
         if (strikes == null || strikes.isEmpty()) {
             return ResponseEntity.ok(
@@ -97,7 +102,6 @@ public class StrikeRequestAdapter {
                           "status": "success",
                           "data": [
                             {
-                              "userId": 2,
                               "date": "2025-06-01",
                               "activity": "출석"
                             }
@@ -122,10 +126,11 @@ public class StrikeRequestAdapter {
     })
     @GetMapping("/{friend_id}")
     public ResponseEntity<OurApiResponse<List<DeliveryStrikeDto>>> getFriendMonthlyStrikes(
-            @PathVariable("user_id") Long userId,
+            @RequestHeader("Authorization") String token,
             @PathVariable("friend_id") Long friendId,
             @RequestParam("year") int year,
             @RequestParam("month") int month) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         List<DeliveryStrikeDto> strikes = service.getFriendMonthlyStrikes(friendId, year, month);
 
         if (strikes == null || strikes.isEmpty()) {
