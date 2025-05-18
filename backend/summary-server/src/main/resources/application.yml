@@ -27,11 +27,11 @@ spring:
         spring.json.value.default.type: com.yourorg.summary.adapter.in.message.dto.SummaryConsumerDto
 
 
-  gemini:
-    api:
-      key: ${{GEMINI_API_KEY1}}
-      url: ${{GEMINI_API_URL}}
-      model: ${{GEMINI_API_MODEL}}
+gemini:
+  api:
+    key: "AIzaSyCBap_rAhC8lGEdK8261Sq8QzNYhjxiqy4"
+    url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent"
+    model: "gemini-2.0-flash-lite"
 
 eureka:
   client:
