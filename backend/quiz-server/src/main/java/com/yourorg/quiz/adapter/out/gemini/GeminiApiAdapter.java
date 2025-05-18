@@ -20,13 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class GeminiApiAdapter implements GeminiApiPort {
     
-    @Value("${gemini.api.key:AIzaSyCBap_rAhC8lGEdK8261Sq8QzNYhjxiqy4}")
+    @Value("${gemini.api.key}")
     private String apiKey;
     
-    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent}")
+    @Value("${gemini.api.url}")
     private String apiUrl;
     
-    @Value("${gemini.api.model:gemini-2.0-flash-lite}")
+    @Value("${gemini.api.model}")
     private String model;
     
     private final RestTemplate restTemplate;

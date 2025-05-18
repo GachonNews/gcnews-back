@@ -29,9 +29,9 @@ spring:
 
   gemini:
     api:
-      key: "AIzaSyBKwtRlVcgFFlSzjSnl_2B-7dD1HhnnH4A"
-      url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent"
-      model: "gemini-2.0-flash-lite"
+      key: ${{secrets.GEMINI_API_KEY1}}
+      url: ${{secrets.GEMINI_API_URL}}
+      model: ${{secrets.GEMINI_API_MODEL}}
 
 eureka:
   client:
