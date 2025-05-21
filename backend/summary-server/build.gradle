@@ -21,7 +21,7 @@ dependencies {
 
     // === 메시징 시스템 ===
     implementation 'org.springframework.kafka:spring-kafka'                 // 카프카 메시징 통합
-
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
     // === JSON 처리 라이브러리 ===
     implementation 'com.fasterxml.jackson.core:jackson-databind'           // JSON 직렬화/역직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310' // Java 8 날짜/시간 타입 지원

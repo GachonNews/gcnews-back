@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -27,7 +28,8 @@ public class RecapApiAdapter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Operation(summary = "사용자 월별 리캡 데이터 조회")
+    @Operation(summary = "사용자 월별 리캡 데이터 조회",
+    security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "리캡 있음",
@@ -55,6 +57,23 @@ public class RecapApiAdapter {
                         },
                         "message": "전송 완료"
                         }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
+                    }
                     """
                 )
             )

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -27,7 +28,8 @@ public class SummaryApiAdapter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Operation(summary = "요약 단건 조회")
+    @Operation(summary = "요약 단건 조회",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -46,6 +48,23 @@ public class SummaryApiAdapter {
                             },
                             "message": null
                           }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
+                    }
                     """
                 )
             )

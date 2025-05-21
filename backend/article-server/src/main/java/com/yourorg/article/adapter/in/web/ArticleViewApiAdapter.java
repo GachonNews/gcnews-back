@@ -8,6 +8,7 @@ import com.yourorg.article.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -27,7 +28,8 @@ public class ArticleViewApiAdapter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Operation(summary = "기사 조회수 증가")
+    @Operation(summary = "기사 조회수 증가",
+    security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -60,6 +62,23 @@ public class ArticleViewApiAdapter {
                       "status": "fail",
                       "data": null,
                       "message": "기사를 찾을 수 없습니다."
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
                     }
                     """
                 )

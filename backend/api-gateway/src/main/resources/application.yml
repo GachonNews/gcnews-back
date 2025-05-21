@@ -26,8 +26,6 @@ springdoc:
     urls:
       - name: ARTICLE-SERVER
         url: http://localhost:9002/v3/api-docs
-      - name: CRAWLING-SERVER
-        url: http://localhost:9001/v3/api-docs
       - name: QUIZ-SERVER
         url: http://localhost:9003/v3/api-docs
       - name: STRIKE-SERVER

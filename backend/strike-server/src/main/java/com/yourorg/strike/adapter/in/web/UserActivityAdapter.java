@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -29,7 +30,8 @@ public class UserActivityAdapter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Operation(summary = "유저 최근 활동(출석) 등록/수정")
+    @Operation(summary = "유저 최근 활동(출석) 등록/수정",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201",
@@ -57,18 +59,17 @@ public class UserActivityAdapter {
             )
         ),
         @ApiResponse(
-            responseCode = "400",
-            description = "유저 정보 저장 실패 등 유효하지 않은 요청",
+            responseCode = "400", description = "입력값 오류",
             content = @Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = OurApiResponse.class),
                 examples = @ExampleObject(
-                    name = "FailExample",
+                    name = "입력값 오류",
                     value = """
                     {
                       "status": "fail",
                       "data": null,
-                      "message": "유저 정보를 저장할 수 없습니다."
+                      "message": "입력값 오류입니다."
                     }
                     """
                 )

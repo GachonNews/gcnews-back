@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -30,7 +31,8 @@ public class FriendRequestAdapter {
 
     private final FriendRequestPort service;
 
-    @Operation(summary = "친구 목록 조회")
+    @Operation(summary = "친구 목록 조회",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "친구 목록 조회 성공",
@@ -83,7 +85,8 @@ public class FriendRequestAdapter {
         return ResponseEntity.ok(new OurApiResponse<>("success", list, null));
     }
 
-    @Operation(summary = "친구 추가")
+    @Operation(summary = "친구 추가",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201", description = "친구 추가 성공",
@@ -105,17 +108,17 @@ public class FriendRequestAdapter {
             )
         ),
         @ApiResponse(
-            responseCode = "400", description = "친구 추가 실패",
+            responseCode = "400", description = "입력값 오류",
             content = @Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = OurApiResponse.class),
                 examples = @ExampleObject(
-                    name = "친구 추가 실패",
+                    name = "입력값 오류",
                     value = """
                     {
-                        "status": "fail",
-                        "data": null,
-                        "message": "친구 추가에 실패했습니다."
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
                     }
                     """
                 )
@@ -136,7 +139,8 @@ public class FriendRequestAdapter {
             .body(new OurApiResponse<>("success", dto, null));
     }
 
-    @Operation(summary = "친구 삭제")
+    @Operation(summary = "친구 삭제",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "친구 삭제 성공",
@@ -152,6 +156,23 @@ public class FriendRequestAdapter {
                             "friendId": 2
                         },
                         "message": null
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
                     }
                     """
                 )

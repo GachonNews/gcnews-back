@@ -11,14 +11,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -31,7 +30,8 @@ public class ArticleLikeApiAdapter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Operation(summary = "좋아요 추가")
+    @Operation(summary = "좋아요 추가",
+        security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "성공",
@@ -45,6 +45,23 @@ public class ArticleLikeApiAdapter {
                       "status": "success",
                       "data": null,
                       "message": "좋아요 추가 완료"
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
                     }
                     """
                 )
@@ -71,8 +88,14 @@ public class ArticleLikeApiAdapter {
     @PostMapping
     public ResponseEntity<OurApiResponse<Void>> addLike(
         @RequestHeader("Authorization") String token,
-        @RequestParam Long crawlingId
+        @RequestParam(required = false) Long crawlingId
     ) {
+        // [1] crawlingId 필수값 체크
+        if (crawlingId == null || crawlingId <= 0) {
+            return ResponseEntity.badRequest()
+                .body(new OurApiResponse<>("fail", null, "입력값 오류입니다."));
+        }
+
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         boolean added = articleLikeApiPort.addLike(Long.valueOf(userId), crawlingId);
         if (!added) {
@@ -85,7 +108,8 @@ public class ArticleLikeApiAdapter {
             .body(new OurApiResponse<>("success", null, "좋아요 추가 완료"));
     }
 
-    @Operation(summary = "좋아요 취소")
+    @Operation(summary = "좋아요 취소",
+        security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "성공",
@@ -99,6 +123,23 @@ public class ArticleLikeApiAdapter {
                       "status": "success",
                       "data": null,
                       "message": "좋아요 취소 완료"
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
                     }
                     """
                 )
@@ -125,8 +166,14 @@ public class ArticleLikeApiAdapter {
     @DeleteMapping
     public ResponseEntity<OurApiResponse<Void>> removeLike(
         @RequestHeader("Authorization") String token,
-        @RequestParam Long crawlingId
+        @RequestParam(required = false) Long crawlingId
     ) {
+        // [2] crawlingId 필수값 체크
+        if (crawlingId == null || crawlingId <= 0) {
+            return ResponseEntity.badRequest()
+                .body(new OurApiResponse<>("fail", null, "입력값 오류입니다."));
+        }
+
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         boolean removed = articleLikeApiPort.removeLike(Long.valueOf(userId), crawlingId);
         if (!removed) {
@@ -139,7 +186,8 @@ public class ArticleLikeApiAdapter {
             .body(new OurApiResponse<>("success", null, "좋아요 취소 완료"));
     }
 
-    @Operation(summary = "사용자가 누른 좋아요 기사 목록 조회")
+    @Operation(summary = "사용자가 누른 좋아요 기사 목록 조회",
+        security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "성공",

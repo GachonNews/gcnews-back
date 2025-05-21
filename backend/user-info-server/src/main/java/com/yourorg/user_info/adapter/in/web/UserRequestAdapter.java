@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -27,7 +28,8 @@ public class UserRequestAdapter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Operation(summary = "유저 프로필 조회")
+    @Operation(summary = "유저 프로필 조회",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200", description = "유저 정보 조회 성공",
@@ -48,6 +50,23 @@ public class UserRequestAdapter {
                         },
                         "message": null
                         }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", description = "입력값 오류",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OurApiResponse.class),
+                examples = @ExampleObject(
+                    name = "입력값 오류",
+                    value = """
+                    {
+                      "status": "fail",
+                      "data": null,
+                      "message": "입력값 오류입니다."
+                    }
                     """
                 )
             )
@@ -84,7 +103,8 @@ public class UserRequestAdapter {
         );
     }
 
-    @Operation(summary = "유저 프로필 등록/수정")
+    @Operation(summary = "유저 프로필 등록/수정",
+    security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201", description = "등록/수정 성공",
@@ -109,6 +129,7 @@ public class UserRequestAdapter {
                 )
             )
         ),
+        
         @ApiResponse(
             responseCode = "400", description = "저장 실패",
             content = @Content(
