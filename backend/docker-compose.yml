@@ -18,7 +18,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "138.2.124.21", "-ustrike_user", "-p1234"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ustrike_user", "-p1234"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -41,7 +41,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "138.2.124.21", "-uuser_info_user", "-p1234"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser_info_user", "-p1234"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -64,7 +64,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 138.2.124.21 -u crawling_user -p1234 | grep 'mysqld is alive' || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u crawling_user -p1234 | grep 'mysqld is alive' || exit 1"]
       interval: 5s
       timeout: 10s
       retries: 30
@@ -87,7 +87,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "138.2.124.21", "-uarticle_user", "-p1234"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uarticle_user", "-p1234"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -110,7 +110,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 138.2.124.21 -u summary_user -p1234 | grep 'mysqld is alive' || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u summary_user -p1234 | grep 'mysqld is alive' || exit 1"]
       interval: 5s
       timeout: 10s
       retries: 30
@@ -133,7 +133,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 138.2.124.21 -u quiz_user -p1234 | grep 'mysqld is alive' || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u quiz_user -p1234 | grep 'mysqld is alive' || exit 1"]
       interval: 5s
       timeout: 10s
       retries: 30
@@ -169,7 +169,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://138.2.124.21:8761/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
       interval: 5s
       timeout: 5s
       retries: 30
