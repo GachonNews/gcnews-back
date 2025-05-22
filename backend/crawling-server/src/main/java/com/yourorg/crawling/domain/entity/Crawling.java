@@ -27,6 +27,9 @@ public class Crawling {
     @Column(nullable = false)
     private String category;
 
+    @Column(nullable = false)
+    private String subCategory;
+
     @Column(name = "upload_at", nullable = false)
     private LocalDateTime uploadAt;
 

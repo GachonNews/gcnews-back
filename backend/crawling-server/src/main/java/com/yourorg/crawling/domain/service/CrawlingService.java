@@ -17,6 +17,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,22 +40,42 @@ public class CrawlingService implements CrawlingTriggerPort {
     @Override
     public void triggerCrawling() {
         for (String mainCategory : MAIN_CATEGORIES) {
-            System.out.println("==== [" + mainCategory + "] 카테고리 크롤링 시작 ====");
             LocalDateTime lastUploadAt = crawlingRepositoryPort.findLatestUploadAtByCategory(mainCategory);
-            System.out.println("DB 최신 업로드 시각: " + lastUploadAt);
 
-            List<String> subCategoryUrls = getSubCategoryUrls(mainCategory);
+            // 1. (수정) 서브카테고리 URL과 이름 한 번에 수집
+            List<Pair<String, String>> subCategories = new ArrayList<>(); // name, url
+            String categoryUrl = "https://www.hankyung.com/" + mainCategory;
+            try {
+                Document categoryDoc = Jsoup.connect(categoryUrl).get();
+                Element gnbUl = categoryDoc.selectFirst("ul.section__gnb");
+                if (gnbUl != null) {
+                    for (Element a : gnbUl.select("a.nav-link")) {
+                        String href = a.absUrl("href");
+                        String name = a.text().trim();
+                        if (!href.isEmpty()) {
+                            subCategories.add(Pair.of(name, href)); // ← 수정: Pair.of 사용
+                            System.out.println("서브카테고리: " + name + " | 링크: " + href);
+                        }
+                    }
+                } else {
+                    subCategories.add(Pair.of(mainCategory, categoryUrl)); // ← 수정: Pair.of 사용
+                }
+            } catch (Exception e) {
+                subCategories.add(Pair.of(mainCategory, categoryUrl)); // ← 수정: Pair.of 사용
+            }
 
-            for (String subCategoryUrl : subCategoryUrls) {
+            // 2. 각 서브카테고리에서 반복
+            for (Pair<String, String> subCategory : subCategories) {
+                String subCategoryName = subCategory.getKey();
+                String subCategoryUrl  = subCategory.getValue();
+
+                // 이하 기존 로직 동일
                 int page = 1;
                 int lastPage = 1;
                 boolean foundOldPage = false;
 
-                // 1. 맨 끝(=DB보다 오래된 뉴스가 포함된 페이지) 찾기
                 while (true) {
                     String pageUrl = subCategoryUrl + "?page=" + page;
-                    System.out.println("[맨끝찾기] 페이지 진입: " + pageUrl);
-
                     try {
                         Document doc = Jsoup.connect(pageUrl).get();
                         Element articleListUl = doc.selectFirst("ul.news-list");
@@ -61,16 +83,13 @@ public class CrawlingService implements CrawlingTriggerPort {
                         Elements liList = articleListUl.select("li");
                         if (liList.isEmpty()) break;
 
-                        // 페이지 내 가장 오래된 뉴스 시각 찾기
-                        LocalDateTime oldestOnPage = liList.stream()
-                            .map(li -> {
-                                Element dateElem = li.selectFirst("p.txt-date");
-                                String dateStr = dateElem != null ? dateElem.text().trim() : null;
-                                return parseDate(dateStr);
-                            })
-                            .filter(d -> d != null)
-                            .min(LocalDateTime::compareTo)
-                            .orElse(null);
+                        LocalDateTime oldestOnPage = liList.stream().map(li -> {
+                            Element dateElem = li.selectFirst("p.txt-date");
+                            String dateStr = dateElem != null ? dateElem.text().trim() : null;
+                            try {
+                                return dateStr == null ? null : LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+                            } catch (Exception e) { return null; }
+                        }).filter(d -> d != null).min(LocalDateTime::compareTo).orElse(null);
 
                         if (lastUploadAt != null && oldestOnPage != null && !oldestOnPage.isAfter(lastUploadAt)) {
                             lastPage = page;
@@ -79,22 +98,15 @@ public class CrawlingService implements CrawlingTriggerPort {
                         }
                         page++;
                     } catch (Exception e) {
-                        System.err.println("맨끝찾기 실패: " + e.getMessage());
                         break;
                     }
                 }
                 if (!foundOldPage) lastPage = page - 1;
                 if (lastPage < 1) lastPage = 1;
-
-                // ====== 3페이지까지만 제한(기사 수는 제한 X) ======
                 if (lastPage > 3) lastPage = 3;
-                // =================================================
 
-                // 2. 맨 끝(lastPage)부터 최신 방향(1페이지)으로 크롤링 및 저장
                 for (int p = lastPage; p >= 1; p--) {
                     String pageUrl = subCategoryUrl + "?page=" + p;
-                    System.out.println("[저장] 페이지 진입: " + pageUrl);
-
                     try {
                         Document doc = Jsoup.connect(pageUrl).get();
                         Element articleListUl = doc.selectFirst("ul.news-list");
@@ -103,22 +115,22 @@ public class CrawlingService implements CrawlingTriggerPort {
                         if (liList.isEmpty()) break;
 
                         for (Element li : liList) {
-                            // 1. 제목 및 링크
+                            // 제목, 링크, 날짜 등등 추출
                             Element h2 = li.selectFirst("h2.news-tit");
                             Element a = h2 != null ? h2.selectFirst("a") : null;
                             String title = a != null ? a.text().trim() : "(제목 없음)";
                             String articleLink = a != null ? a.absUrl("href") : null;
 
-                            // 2. 날짜
                             Element dateElem = li.selectFirst("p.txt-date");
                             String dateStr = dateElem != null ? dateElem.text().trim() : null;
-                            LocalDateTime uploadAt = parseDate(dateStr);
+                            LocalDateTime uploadAt = null;
+                            try {
+                                uploadAt = dateStr == null ? null : LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+                            } catch (Exception e) { /* 무시 */ }
 
-                            // 3. 이미지
                             Element img = li.selectFirst("figure.thumb img");
                             String imgLink = img != null ? img.absUrl("src") : null;
 
-                            // 4. 본문
                             String content = "";
                             if (articleLink != null && !articleLink.isEmpty()) {
                                 try {
@@ -127,23 +139,22 @@ public class CrawlingService implements CrawlingTriggerPort {
                                     if (body != null) {
                                         body.select("br").remove();
                                         content = body.text().trim().replaceAll("\n+", "\n");
-                                    } else {
-                                        content = articleDoc.body().text().trim();
                                     }
+                                    else content = articleDoc.body().text().trim();
                                 } catch (Exception e) {
                                     content = "(본문 추출 실패)";
                                 }
                             }
 
-                            // 5. DB 최신 업로드 시각과 비교 (중복 저장 방지)
                             if (lastUploadAt != null && uploadAt != null && !uploadAt.isAfter(lastUploadAt)) {
                                 continue;
                             }
 
-                            // 6. 저장 및 메시지 발행
+                            // === 여기! Crawling에 서브카테고리명 저장 ===
                             Crawling crawling = new Crawling();
                             crawling.setTitle(title);
                             crawling.setCategory(mainCategory);
+                            crawling.setSubCategory(subCategoryName); // 여기서 저장!
                             crawling.setContent(content);
                             crawling.setUploadAt(uploadAt);
                             crawling.setArticleLink(articleLink);
@@ -152,63 +163,27 @@ public class CrawlingService implements CrawlingTriggerPort {
                             crawlingRepositoryPort.save(crawling);
 
                             summaryRequestPort.requestSummary(new SummaryRequestDto(
-                                crawling.getCrawlingId(), crawling.getContent()));
+                                    crawling.getCrawlingId(), crawling.getContent()));
                             quizRequestPort.requestQuiz(new QuizRequestDto(
-                                crawling.getCrawlingId(), crawling.getContent()));
+                                    crawling.getCrawlingId(), crawling.getContent()));
                             articleRequestPort.requestArticle(new ArticleRequestDto(
-                                crawling.getCrawlingId(), crawling.getTitle(), crawling.getCategory(),
-                                crawling.getContent(), crawling.getArticleLink(), crawling.getImgLink(),
-                                crawling.getUploadAt() != null ? crawling.getUploadAt().toString() : ""
+                                    crawling.getCrawlingId(), crawling.getTitle(),
+                                    crawling.getCategory(), // 여기도 필요시 전달!
+                                    crawling.getSubCategory(),
+                                    crawling.getContent(), crawling.getArticleLink(), crawling.getImgLink(),
+                                    crawling.getUploadAt() != null ? crawling.getUploadAt().toString() : ""
                             ));
 
                             System.out.println("뉴스 저장: " + title + " | " + uploadAt + " | " + articleLink);
 
-                            Thread.sleep(60 * 1000); // 5초 대기 (API 차단 방지)
+                            Thread.sleep(60 * 1000);
                         }
                     } catch (Exception e) {
-                        System.err.println("페이지 크롤링 실패: " + e.getMessage());
                         break;
                     }
                 }
             }
         }
         System.out.println("크롤링 완료!");
-    }
-
-    // 서브카테고리 URL 수집
-    private List<String> getSubCategoryUrls(String mainCategory) {
-        List<String> subCategoryUrls = new ArrayList<>();
-        String categoryUrl = "https://www.hankyung.com/" + mainCategory;
-        try {
-            Document categoryDoc = Jsoup.connect(categoryUrl).get();
-            Element gnbUl = categoryDoc.selectFirst("ul.section__gnb");
-            if (gnbUl != null) {
-                for (Element a : gnbUl.select("a.nav-link")) {
-                    String href = a.absUrl("href");
-                    if (!href.isEmpty()) {
-                        subCategoryUrls.add(href);
-                        System.out.println("서브카테고리 링크: " + href);
-                    }
-                }
-            } else {
-                subCategoryUrls.add(categoryUrl);
-            }
-        } catch (Exception e) {
-            System.err.println("서브카테고리 수집 실패: " + e.getMessage());
-            subCategoryUrls.add(categoryUrl);
-        }
-        return subCategoryUrls;
-    }
-
-    // 날짜 파싱
-    private LocalDateTime parseDate(String dateStr) {
-        if (dateStr == null) return null;
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-            return LocalDateTime.parse(dateStr, formatter);
-        } catch (Exception e) {
-            System.err.println("날짜 파싱 실패: " + dateStr);
-            return null;
-        }
-    }
+    }    
 }

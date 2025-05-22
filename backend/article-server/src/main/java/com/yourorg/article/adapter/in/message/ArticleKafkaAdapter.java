@@ -28,7 +28,7 @@ public class ArticleKafkaAdapter {
             // ✅ 메시지 → DTO 역직렬화
             ArticleConsumerDto dto = objectMapper.readValue(rawMessage, ArticleConsumerDto.class);
             // ✅ DTO → 도메인 객체 변환
-            Article article = new Article(dto.getCrawlingId(), dto.getTitle(), dto.getCategory(), dto.getContent(), dto.getArticleLink(), dto.getImgLink(), dto.getUploadAt());
+            Article article = new Article(dto.getCrawlingId(), dto.getTitle(), dto.getCategory(), dto.getSubCategory(), dto.getContent(), dto.getArticleLink(), dto.getImgLink(), dto.getUploadAt());
             // ✅ 포트 인터페이스 호출 (비즈니스 로직 실행)
             articleJobPort.responseArticleJob(article); // ✅ 인터페이스 메서드 호출
             

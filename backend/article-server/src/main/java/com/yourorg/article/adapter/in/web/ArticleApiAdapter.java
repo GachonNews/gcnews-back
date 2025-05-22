@@ -109,7 +109,7 @@ public class ArticleApiAdapter {
             )
         )
     })
-    @GetMapping("/{category}")
+    @GetMapping("category/{category}")
     public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getCategoryArticle(
             @RequestHeader("Authorization") String token,
             @PathVariable String category) {
@@ -122,6 +122,29 @@ public class ArticleApiAdapter {
         }
 
         List<ArticleResponse> articles = articleQueryApiPort.articleCategoryRequest(category);
+
+        if (articles == null || articles.isEmpty()) {
+            return ResponseEntity.status(404)
+                .body(new OurApiResponse<>("fail", null, "해당 카테고리의 기사가 없습니다."));
+        }
+
+        return ResponseEntity.ok(
+            new OurApiResponse<>("success", articles, null)
+        );
+    }
+    @GetMapping("subcategory/{subcategory}")
+    public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getSubCategoryArticle(
+            @RequestHeader("Authorization") String token,
+            @PathVariable String subcategory) {
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+
+        // // 카테고리 값이 허용된 목록에 없으면 400 반환 (입력값 오류)
+        // if (!VALID_CATEGORIES.contains(subcategory)) {
+        //     return ResponseEntity.badRequest()
+        //         .body(new OurApiResponse<>("fail", null, "입력값 오류입니다."));
+        // }
+
+        List<ArticleResponse> articles = articleQueryApiPort.articleSubCategoryRequest(subcategory);
 
         if (articles == null || articles.isEmpty()) {
             return ResponseEntity.status(404)

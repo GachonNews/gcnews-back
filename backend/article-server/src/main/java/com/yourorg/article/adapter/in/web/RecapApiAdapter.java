@@ -4,11 +4,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.yourorg.article.adapter.in.web.dto.response.RecapResponse;
+import com.yourorg.article.adapter.in.web.dto.response.ArticleResponse;
 import com.yourorg.article.adapter.in.web.dto.response.OurApiResponse;
 import com.yourorg.article.port.in.web.RecapApiPort;
 import com.yourorg.article.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -42,8 +43,7 @@ public class RecapApiAdapter {
                         {
                         "status": "success",
                         "data": {
-                            "top5Liked": [],
-                            "top5NotLiked": [
+                            [
                                 {
                                     "crawlingId": 1,
                                     "title": "KIEP, 세계경제 성장률 2.7% 전망…美中 관세유예는 \"정상화되는 과정\"",
@@ -97,12 +97,12 @@ public class RecapApiAdapter {
         )
     })
     @GetMapping("/{yearMonth}")
-    public ResponseEntity<OurApiResponse<RecapResponse>> getMonthlyRecap(
+    public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getMonthlyRecap(
             @RequestHeader("Authorization") String token,
             @PathVariable String yearMonth) {
 
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
-        RecapResponse response = recapApiPort.getMonthlyRecap(Long.valueOf(userId), yearMonth);
+        List<ArticleResponse> response = recapApiPort.getMonthlyRecap(Long.valueOf(userId), yearMonth);
         if (response == null) {
             return ResponseEntity.status(404)
                 .body(new OurApiResponse<>("fail", null, "해당 월의 리캡 기록이 없습니다."));
