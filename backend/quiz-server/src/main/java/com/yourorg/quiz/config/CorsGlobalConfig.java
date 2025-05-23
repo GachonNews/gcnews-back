@@ -10,8 +10,12 @@ public class CorsGlobalConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:8080") // Gateway코드 또는 Swagger UI 띄우는 주소
-            .allowedOrigins("http://138.2.124.21:8080")
+            .allowedOrigins(
+                "http://localhost:8080",
+                "http://138.2.124.21:8080",
+                "http://localhost:3000",
+                "http://localhost:5173"
+            )
             .allowedMethods("*")
             .allowedHeaders("*")
             .allowCredentials(true);

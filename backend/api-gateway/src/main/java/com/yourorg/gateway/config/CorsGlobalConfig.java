@@ -6,14 +6,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 @Configuration
 public class CorsGlobalConfig {
 
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:3000"); // 프론트엔드 주소
-        corsConfig.addAllowedOrigin("http://138.2.124.21:8080");
+        corsConfig.setAllowedOrigins(Arrays.asList(
+            "http://localhost:8080",
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://138.2.124.21:8080"
+        ));
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(true);
