@@ -34,7 +34,7 @@ public class ArticleApiAdapter {
 
     // 허용 카테고리 목록 선언 (필요시 수정)
     private static final Set<String> VALID_CATEGORIES = Set.of(
-        "economy", "politics", "sports", "it", "world", "culture"
+        "economy", "financial-market", "industry", "distribution", "it", "international"
     );
 
     @Operation(
@@ -63,7 +63,7 @@ public class ArticleApiAdapter {
                             "articleLink": "https://www.hankyung.com/article/202505139360i",
                             "imgLink": "https://img.hankyung.com/photo/202505/01.40461532.3.jpg",
                             "uploadAt": "2025-05-13T14:05"
-                            "views": 10452
+                            "views": 10452ㅋ
                             }
                         ],
                         "message": "전송 완료"
