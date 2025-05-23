@@ -25,6 +25,9 @@ public class UserActivityService implements UserActivityPort {
     public DeliveryStrikeDto upsertUser(Long userId, DeliveryStrikeDto dto) {
         LocalDate visitDate = dto.getVisitDate();
 
+        System.out.println("@@@@@@@@@@@@@@@@@@@ " + userId + " " + dto.getNewsId() +
+                            " " + dto.getVisitDate() + " " + dto.isSummarized() + " " + dto.isQuized()); 
+
         // 1) 이번 달 전체 기록을 조회
         List<Strike> monthlyStrikes = readPort.findMonthlyStrikes(userId, visitDate);
 

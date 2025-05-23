@@ -34,10 +34,9 @@ public class UserService implements UserRequestPort {
             .map(existing -> {
                 // 기존 정보 업데이트
                 existing.setName(dto.getName());
-                existing.setGender(dto.getGender());
-                existing.setAge(dto.getAge());
-                existing.setJoinAt(dto.getJoinAt());
-                existing.setImg(dto.getImg());
+                existing.setLoginId(dto.getLoginId());
+                existing.setPassword(dto.getPassword());
+                existing.setEmail(dto.getEmail());
                 // 기타 필드 업데이트
                 return writePort.saveUser(existing); // 변경 저장
             })

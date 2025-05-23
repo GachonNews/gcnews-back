@@ -23,7 +23,7 @@ public class FriendService implements FriendRequestPort {
     public List<FriendResponseDto> getFriends(Long userId) {
         // userId의 친구 목록을 조회해서 FriendResponseDto 리스트로 반환
         return readPort.findFriendList(userId).stream()
-                .map(f -> new FriendResponseDto(f.getFriendId()))
+                .map(f -> new FriendResponseDto(f.getUserId(), f.getFriendId()))
                 .toList();
     }
 
@@ -34,7 +34,7 @@ public class FriendService implements FriendRequestPort {
         Friend f = new Friend(userId, friendId);
         Friend saved = writePort.saveFriend(f);
         // 저장된 결과를 FriendResponseDto로 반환
-        return new FriendResponseDto(saved.getFriendId());
+        return new FriendResponseDto(saved.getUserId(), saved.getFriendId());
     }
 
     @Override
@@ -44,6 +44,6 @@ public class FriendService implements FriendRequestPort {
         Friend existing = readPort.findDeleteFriend(userId, friendId);
         writePort.deleteFriend(existing); // 친구 삭제
         // 삭제된 친구 정보를 FriendResponseDto로 반환
-        return new FriendResponseDto(existing.getFriendId());
+        return new FriendResponseDto(userId, existing.getFriendId());
     }
 }

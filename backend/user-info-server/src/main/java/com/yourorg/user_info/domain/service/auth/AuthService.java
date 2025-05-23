@@ -19,13 +19,13 @@ public class AuthService implements AuthPort {
     }
 
     @Override
-    public User signup(String loginId, String password) {
+    public User signup(String loginId, String password, String name, String email) {
         // 이미 존재하는 loginId가 있으면 예외 발생
         if (authRepositoryPort.findByLoginId(loginId) != null) {
             throw new RuntimeException("이미 존재하는 사용자입니다.");
         }
         // 주의: 실제 서비스는 password 암호화 필요!
-        User user = new User(null, loginId, password); // 새 User 생성
+        User user = new User(loginId, password, name, email); // 새 User 생성
         return authRepositoryPort.save(user);          // 저장 후 반환
     }
 

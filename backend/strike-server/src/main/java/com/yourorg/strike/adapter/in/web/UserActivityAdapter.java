@@ -82,7 +82,7 @@ public class UserActivityAdapter {
             @RequestBody DeliveryStrikeDto strikeDto) {
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         DeliveryStrikeDto dto = service.upsertUser(Long.valueOf(userId), strikeDto);
-
+        System.out.print("!!!!!!!!!!!!!!!!!!!! " + userId);
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new OurApiResponse<>("fail", null, "유저 정보를 저장할 수 없습니다."));

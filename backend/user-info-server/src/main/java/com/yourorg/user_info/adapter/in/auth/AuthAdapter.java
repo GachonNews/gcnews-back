@@ -69,7 +69,8 @@ public class AuthAdapter {
     })
     @PostMapping("/signup")
     public ResponseEntity<OurApiResponse<User>> signup(@RequestBody SignupRequestDto req) {
-        User user = authPort.signup(req.getLoginId(), req.getPassword());
+        System.out.println("!!!!!!!!!!!!!!!");
+        User user = authPort.signup(req.getLoginId(), req.getPassword(), req.getName(), req.getEmail());
         if (user == null) {
             // 이미 존재 등 예시, 실무에선 서비스에서 결과 분리 추천
             return ResponseEntity.status(409)

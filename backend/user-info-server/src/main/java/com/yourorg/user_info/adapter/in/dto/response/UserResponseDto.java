@@ -13,38 +13,38 @@ import com.yourorg.user_info.domain.entity.User;
 public class UserResponseDto {
     // private Long userId;
     private String name;
-    private String gender;
-    private int age;
-    private String joinAt;
-    private String img;
+    private String loginId;
+    private String password;
+    private String email;
+    // private String gender;
+    // private int age;
+    // private String joinAt;
+    // private String img;
 
-    public UserResponseDto(String name, String gender, int age, String joinAt, String img) {
+    public UserResponseDto(String name, String loginId, String password, String email) {
         // this.userId = userId;
         this.name = name;
-        this.gender=gender;
-        this.age=age;
-        this.joinAt=joinAt;
-        this.img=img;
+        this.loginId = loginId;
+        this.password = password;
+        this.email = email;
     }
 
 
      public static UserResponseDto fromEntity(User user) {
         UserResponseDto dto = new UserResponseDto();
         dto.setName(user.getName());
-        dto.setGender(user.getGender());
-        dto.setAge(user.getAge());
-        dto.setJoinAt(user.getJoinAt());
-        dto.setImg(user.getImg());
+        dto.setLoginId(user.getLoginId());
+        dto.setPassword(user.getPassword());
+        dto.setEmail(user.getEmail());
         // Map other fields as necessary
         return dto;
     }
     public User toEntity() {
         User user = new User();
         user.setName(this.name);
-        user.setGender(this.gender);
-        user.setAge(this.age);
-        user.setJoinAt(this.joinAt);
-        user.setImg(this.img);
+        user.setLoginId(this.loginId);
+        user.setPassword(this.password);
+        user.setEmail(this.email);
         // Map other fields as necessary
         return user;
     }

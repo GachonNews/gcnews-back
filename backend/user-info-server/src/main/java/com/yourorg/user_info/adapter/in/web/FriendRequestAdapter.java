@@ -73,9 +73,11 @@ public class FriendRequestAdapter {
             )
         )
     })
+
     @GetMapping
     public ResponseEntity<OurApiResponse<List<FriendResponseDto>>> getFriends(
             @RequestHeader("Authorization") String token) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         List<FriendResponseDto> list = service.getFriends(Long.valueOf(userId));
         if (list.isEmpty()) {
