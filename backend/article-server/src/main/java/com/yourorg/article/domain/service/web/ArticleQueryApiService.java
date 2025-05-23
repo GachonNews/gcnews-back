@@ -7,13 +7,14 @@ import com.yourorg.article.port.out.persistence.ArticleFindPort;
 import com.yourorg.article.domain.service.exceptionhandler.QueryException;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleQueryApiService implements ArticleQueryApiPort{
+public class ArticleQueryApiService implements ArticleQueryApiPort {
 
     private final ArticleFindPort articleFindPort;
 
@@ -23,34 +24,48 @@ public class ArticleQueryApiService implements ArticleQueryApiPort{
         "distribution", "it", "international"
     );
 
-    // 2. 특정 카테고리 기사 조회
+    // 1. 오늘 전체 뉴스 중 조회수 1위
+    @Override
+    public Optional<ArticleResponse> findTodayTopArticle() {
+        return articleFindPort.findTopByUploadAtTodayOrderByViewsDesc()
+                .map(ArticleResponse::fromEntity);
+    }
+
+    // 2. 오늘 카테고리별 뉴스 중 조회수 1위
+    @Override
+    public Optional<ArticleResponse> findTodayTopArticleByCategory(String category) {
+        validateCategory(category);
+        return articleFindPort.findTopByCategoryAndUploadAtTodayOrderByViewsDesc(category)
+                .map(ArticleResponse::fromEntity);
+    }
+
+    // 3. 특정 카테고리 기사 리스트 (기존)
     @Override
     public List<ArticleResponse> articleCategoryRequest(String category) {
         validateCategory(category);
 
         List<Article> articles = articleFindPort
-            .findTop6ByCategoryOrderByUploadAtDesc(category);
+                .findTop6ByCategoryOrderByUploadAtDesc(category);
 
         validateEmptyResult(articles, category);
 
         return articles.stream()
-            .map(ArticleResponse::fromEntity)
-            .collect(Collectors.toList());
+                .map(ArticleResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
+    // 4. 서브카테고리 기사 리스트 (기존)
     @Override
     public List<ArticleResponse> articleSubCategoryRequest(String subcategory) {
-
         List<Article> articles = articleFindPort
-            .findTop6BySubCategoryOrderByUploadAtDesc(subcategory);
+                .findTop6BySubCategoryOrderByUploadAtDesc(subcategory);
 
         validateEmptyResult(articles, subcategory);
 
         return articles.stream()
-            .map(ArticleResponse::fromEntity)
-            .collect(Collectors.toList());
+                .map(ArticleResponse::fromEntity)
+                .collect(Collectors.toList());
     }
-
 
     //-- 검증 메서드들 --//
     private void validateCategory(String category) {

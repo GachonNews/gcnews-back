@@ -1,11 +1,14 @@
-// ArticleAdapter.java
 package com.yourorg.article.adapter.out.persistence;
 
 import com.yourorg.article.domain.entity.Article;
 import com.yourorg.article.port.out.persistence.ArticleFindPort;
 import com.yourorg.article.adapter.out.repository.ArticleJPARepository;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ArticleReadAdapter implements ArticleFindPort {
@@ -40,8 +43,22 @@ public class ArticleReadAdapter implements ArticleFindPort {
     public boolean existsByCrawlingId(Long crawlingId) {
         return articleRepository.existsByCrawlingId(crawlingId);
     }
+
     @Override
     public List<Article> findTop5LikedByUser(Long userId, String yearMonth) {
-        return articleRepository.findLikedTop6(userId, yearMonth); // JPA 커스텀 쿼리
+        return articleRepository.findLikedTop6(userId, yearMonth);
+    }
+
+    // === [추가] 오늘 전체 조회수 TOP 1 ===
+    @Override
+    public Optional<Article> findTopByUploadAtTodayOrderByViewsDesc() {
+        String today = LocalDate.now().toString();  // ex) "2025-05-23"
+        return articleRepository.findTopByUploadAtTodayOrderByViewsDesc(today);
+    }
+
+    @Override
+    public Optional<Article> findTopByCategoryAndUploadAtTodayOrderByViewsDesc(String category) {
+        String today = LocalDate.now().toString();  // ex) "2025-05-23"
+        return articleRepository.findTopByCategoryAndUploadAtTodayOrderByViewsDesc(category, today);
     }
 }
