@@ -27,13 +27,13 @@ public class ArticleReadAdapter implements ArticleFindPort {
     }
 
     @Override
-    public List<Article> findByCategoryInOrderByUploadAtDesc(List<String> category) {
-        return articleRepository.findByCategoryInOrderByUploadAtDesc(category);
+    public List<Article> findTop6ByCategoryOrderByUploadAtDesc(String category) {
+        return articleRepository.findTop6ByCategoryOrderByUploadAtDesc(category);
     }
 
     @Override
-    public List<Article> findTop5ByCategoryOrderByUploadAtDesc(String category) {
-        return articleRepository.findTop5ByCategoryOrderByUploadAtDesc(category);
+    public List<Article> findTop6BySubCategoryOrderByUploadAtDesc(String subCategory) {
+        return articleRepository.findTop6BySubCategoryOrderByUploadAtDesc(subCategory);
     }
 
     @Override
@@ -42,11 +42,6 @@ public class ArticleReadAdapter implements ArticleFindPort {
     }
     @Override
     public List<Article> findTop5LikedByUser(Long userId, String yearMonth) {
-        return articleRepository.findLikedTop5(userId, yearMonth); // JPA 커스텀 쿼리
-    }
-
-    @Override
-    public List<Article> findTop5NotLikedByUserAndMonth(Long userId, String yearMonth) {
-        return articleRepository.findNotLikedTop5(userId, yearMonth);
+        return articleRepository.findLikedTop6(userId, yearMonth); // JPA 커스텀 쿼리
     }
 }

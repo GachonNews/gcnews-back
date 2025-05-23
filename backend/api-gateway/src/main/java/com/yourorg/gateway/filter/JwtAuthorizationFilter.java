@@ -23,6 +23,7 @@ public class JwtAuthorizationFilter implements GlobalFilter, Ordered {
     private static final String[] IGNORE_PATHS = {
         "/swagger-ui.html",
         "/swagger-ui/index.html",
+        "/webjars/swagger-ui/index.html",
         "/swagger-ui/",
         "/v3/api-docs",
         "/v3/api-docs/",

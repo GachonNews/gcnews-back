@@ -12,7 +12,8 @@ public class CorsGlobalConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://138.2.124.21:3000"); // 프론트엔드 주소
+        corsConfig.addAllowedOrigin("http://localhost:3000"); // 프론트엔드 주소
+        corsConfig.addAllowedOrigin("http://138.2.124.21:8080");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(true);

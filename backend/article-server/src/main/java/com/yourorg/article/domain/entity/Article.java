@@ -24,13 +24,16 @@ public class Article {
 
     private String category;             // 카테고리(예: 경제, IT 등)
 
+    private String subCategory;          // 부카테고리
+
     @Column(name = "upload_at")
     private String uploadAt;      // 뉴스 날짜/작성일시
 
     @Column(columnDefinition = "TEXT")
     private String content;              // 본문
 
-    private Long views;               // 조회수(필요시)
+    
+    private Long views = 0L;               // 조회수(필요시)
 
     @Column(name = "article_link")
     private String articleLink;             // 뉴스 상세 URL
@@ -39,11 +42,12 @@ public class Article {
     private String imgLink;              // 썸네일 이미지 URL
 
     // 기본 생성자 (필드 타입 수정)
-    public Article(Long crawlingId, String title, String category, String content,
+    public Article(Long crawlingId, String title, String category, String subCategory, String content,
                 String articleLink, String imgLink, String uploadAt) {
         this.crawlingId = crawlingId;
         this.title = title;
         this.category = category;
+        this.subCategory = subCategory;
         this.content = content;
         this.articleLink = articleLink;
         this.imgLink = imgLink;

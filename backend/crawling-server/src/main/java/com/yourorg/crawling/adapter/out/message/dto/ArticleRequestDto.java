@@ -10,6 +10,7 @@ public class ArticleRequestDto {
      private Long crawlingId;
      private String title;
      private String category;
+     private String subCategory;
      private String content;
      private String articleLink;
      private String imgLink;

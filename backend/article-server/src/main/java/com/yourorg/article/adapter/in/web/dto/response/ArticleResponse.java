@@ -8,10 +8,12 @@ public class ArticleResponse {
     Long crawlingId;
     String title;
     String category;
+    String subCategory;
     String content;
     String articleLink;
     String imgLink;
     String uploadAt;
+    Long views;
 
     // ✅ **정적 팩토리 메서드 필수**
     public static ArticleResponse fromEntity(Article article) {
@@ -19,10 +21,12 @@ public class ArticleResponse {
             article.getCrawlingId(),
             article.getTitle(),
             article.getCategory(),
+            article.getSubCategory(),
             article.getContent(),
             article.getArticleLink(),
             article.getImgLink(),
-            article.getUploadAt()
+            article.getUploadAt(),
+            article.getViews()
         );
     }
 }
