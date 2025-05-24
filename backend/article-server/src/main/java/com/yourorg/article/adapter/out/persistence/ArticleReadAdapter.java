@@ -31,12 +31,12 @@ public class ArticleReadAdapter implements ArticleFindPort {
 
     @Override
     public List<Article> findTop6ByCategoryOrderByUploadAtDesc(String category) {
-        return articleRepository.findTop6ByCategoryOrderByUploadAtDesc(category);
+        return articleRepository.findTop3ByCategoryOrderByUploadAtDesc(category);
     }
 
     @Override
     public List<Article> findTop6BySubCategoryOrderByUploadAtDesc(String subCategory) {
-        return articleRepository.findTop6BySubCategoryOrderByUploadAtDesc(subCategory);
+        return articleRepository.findTop3BySubCategoryOrderByUploadAtDesc(subCategory);
     }
 
     @Override

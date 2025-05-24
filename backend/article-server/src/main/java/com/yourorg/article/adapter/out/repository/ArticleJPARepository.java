@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface ArticleJPARepository extends JpaRepository<Article, Long> {
 
-  List<Article> findTop6ByCategoryOrderByUploadAtDesc(String category);
-  List<Article> findTop6BySubCategoryOrderByUploadAtDesc(String subCategory);
+  List<Article> findTop3ByCategoryOrderByUploadAtDesc(String category);
+  List<Article> findTop3BySubCategoryOrderByUploadAtDesc(String subCategory);
   List<Article> findByCrawlingIdIn(List<Long> crawlingIds);
   List<Article> findByCrawlingId(Long crawlingId);
   boolean existsByCrawlingId(Long crawlingId);

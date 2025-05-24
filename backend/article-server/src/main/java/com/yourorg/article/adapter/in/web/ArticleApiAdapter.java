@@ -18,9 +18,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/article")
@@ -34,7 +36,15 @@ public class ArticleApiAdapter {
 
     // 허용 카테고리 목록 선언 (필요시 수정)
     private static final Set<String> VALID_CATEGORIES = Set.of(
-        "economy", "financial-market", "industry", "distribution", "it", "international"
+        "economy", "financial-market", "industry", "distribution", "it"//, "international"
+    );
+
+    private static final Map<String, List<String>> CATEGORY_MAP = Map.of(
+    "economy", List.of("경제정책", "거시경제", "외환시장", "세금", "고용복지"),
+    "financial-market", List.of("금융정책", "은행", "보험·2금융", "가상자산·핀테크", "재테크"),
+    "industry", List.of("반도체·전자", "자동차·배터리", "조선·해운", "철강·화학", "로봇·미래"),
+    "distribution", List.of("백화점·마트", "편의점·슈퍼", "아울렛·쇼핑몰", "e커머스", "F&B"),
+    "it", List.of("과학", "바이오", "모바일", "인터넷", "통신·뉴미디어")
     );
 
     @Operation(
@@ -111,20 +121,21 @@ public class ArticleApiAdapter {
             )
         )
     })
-    @GetMapping("category/{category}")
+    @GetMapping
     public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getCategoryArticle(
-            @RequestHeader("Authorization") String token,
-            @PathVariable String category) {
+            @RequestHeader("Authorization") String token) {
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
 
-        // 카테고리 값이 허용된 목록에 없으면 400 반환 (입력값 오류)
-        if (!VALID_CATEGORIES.contains(category)) {
-            return ResponseEntity.badRequest()
-                .body(new OurApiResponse<>("fail", null, "입력값 오류입니다."));
+
+        List<ArticleResponse> articles = new ArrayList<>();
+
+    // VALID_CATEGORIES에 있는 모든 카테고리 기사 취합
+        for (String category : VALID_CATEGORIES) {
+            List<ArticleResponse> categoryArticles = articleQueryApiPort.articleCategoryRequest(category);
+            if (categoryArticles != null && !categoryArticles.isEmpty()) {
+                articles.addAll(categoryArticles);
+            }
         }
-
-        List<ArticleResponse> articles = articleQueryApiPort.articleCategoryRequest(category);
-
         if (articles == null || articles.isEmpty()) {
             return ResponseEntity.status(404)
                 .body(new OurApiResponse<>("fail", null, "해당 카테고리의 기사가 없습니다."));
@@ -135,15 +146,26 @@ public class ArticleApiAdapter {
         );
     }
 
-    @GetMapping("subcategory/{subcategory}")
+    @GetMapping("{category}")
     public ResponseEntity<OurApiResponse<List<ArticleResponse>>> getSubCategoryArticle(
             @RequestHeader("Authorization") String token,
-            @PathVariable String subcategory) {
+            @PathVariable String category) {
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
 
-        List<ArticleResponse> articles = articleQueryApiPort.articleSubCategoryRequest(subcategory);
+        // 1) 카테고리 매핑에서 하위 목록 얻기
+        List<String> subcategories = CATEGORY_MAP.getOrDefault(category, List.of(category));
 
-        if (articles == null || articles.isEmpty()) {
+        // 2) 하위 카테고리별 기사 리스트 합치기
+        List<ArticleResponse> articles = new ArrayList<>();
+        for (String subcategory : subcategories) {
+            List<ArticleResponse> subArticles = articleQueryApiPort.articleSubCategoryRequest(subcategory);
+
+            if (subArticles != null) {
+                articles.addAll(subArticles);
+            }
+        }
+
+        if (articles.isEmpty()) {
             return ResponseEntity.status(404)
                 .body(new OurApiResponse<>("fail", null, "해당 카테고리의 기사가 없습니다."));
         }
