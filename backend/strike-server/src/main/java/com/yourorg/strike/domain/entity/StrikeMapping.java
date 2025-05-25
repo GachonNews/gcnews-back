@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class StrikeMapping implements Serializable {
 
     private Long userId;
-    @Column(name = "visit_date")
+    @Column(name = "Visit_date")
     private LocalDate visitDate;
 
     public StrikeMapping(){}

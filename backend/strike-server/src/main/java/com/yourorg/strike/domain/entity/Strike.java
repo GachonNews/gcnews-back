@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "strike")
+@Table(name = "Strike")
 public class Strike {
     
     @EmbeddedId

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "crawling", indexes = {
+@Table(name = "Crawling", indexes = {
     @Index(name = "idx_category", columnList = "category"),
     @Index(name = "idx_upload_at", columnList = "uploadAt")
 })

@@ -20,29 +20,29 @@ public interface ArticleJPARepository extends JpaRepository<Article, Long> {
 
   @Modifying
   @Transactional 
-  @Query("UPDATE article a SET a.views = a.views + 1 WHERE a.crawlingId = :crawlingId")
+  @Query("UPDATE Article a SET a.views = a.views + 1 WHERE a.crawlingId = :crawlingId")
   void incrementViewCount(@Param("crawlingId") Long crawlingId);
 
   // 오늘 전체 조회수 1위 (uploadAt이 오늘의 00:00~내일 00:00 사이)
   @Query(value = """
       SELECT *
-      FROM article a
+      FROM Article a
       WHERE SUBSTRING(a.upload_at, 1, 10) = :today
       ORDER BY a.views DESC
       LIMIT 1
-      """, nativeQuery = true)
+      """)
   Optional<Article> findTopByUploadAtTodayOrderByViewsDesc(@Param("today") String today);
 
 
   // 오늘 카테고리별 조회수 1위
   @Query(value = """
       SELECT *
-      FROM article a
+      FROM Article a
       WHERE a.category = :category
         AND SUBSTRING(a.upload_at, 1, 10) = :today
       ORDER BY a.views DESC
       LIMIT 1
-      """, nativeQuery = true)
+      """)
   Optional<Article> findTopByCategoryAndUploadAtTodayOrderByViewsDesc(
       @Param("category") String category,
       @Param("today") String today
@@ -57,23 +57,23 @@ public interface ArticleJPARepository extends JpaRepository<Article, Long> {
           ) THEN a.views + 1000
           ELSE a.views
           END AS weighted_views
-    FROM article a
+    FROM Article a
     WHERE SUBSTRING(a.upload_at, 1, 7) = :yearMonth
     ORDER BY
       CASE WHEN (SELECT SUM(a2.views)
-                FROM article a2
+                FROM Article a2
                 WHERE SUBSTRING(a2.upload_at, 1, 7) = :yearMonth) = 0
           THEN a.upload_at
           ELSE
             CASE WHEN EXISTS (
-              SELECT 1 FROM user u
+              SELECT 1 FROM User u
               WHERE u.user_id = :userId AND u.crawling_id = a.crawling_id
             ) THEN a.views + 1000
             ELSE a.views
             END
       END DESC
     LIMIT 6
-    """, nativeQuery = true)
+    """)
   List<Article> findLikedTop6(
       @Param("userId") Long userId,
       @Param("yearMonth") String yearMonth

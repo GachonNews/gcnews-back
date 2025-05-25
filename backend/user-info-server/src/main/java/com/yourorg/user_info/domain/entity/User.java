@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 @Entity
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "users")
+@Table(name = "Users")
 public class User {
 
     public User(String loginId, String password, String name, String email){
