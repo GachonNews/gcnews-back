@@ -11,13 +11,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface StrikeRepository extends JpaRepository<Strike, StrikeMapping> {
     @Query("SELECT s FROM Strike s " +
-           "WHERE s.id.userId = :userId " +
-           "AND YEAR(s.id.visitDate) = :year " +
-           "AND MONTH(s.id.visitDate) = :month")
+       "WHERE s.id.userId = :userId " +
+       "AND YEAR(s.id.visitDate) = :year " +
+       "AND MONTH(s.id.visitDate) = :month")
     List<Strike> findByUserIdAndVisitYearAndMonth(
         @Param("userId") Long userId,
         @Param("year") int year,
         @Param("month") int month
     );
-
 }
