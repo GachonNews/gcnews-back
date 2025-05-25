@@ -47,8 +47,6 @@ public class ArticleQueryApiService implements ArticleQueryApiPort {
         List<Article> articles = articleFindPort
                 .findTop6ByCategoryOrderByUploadAtDesc(category);
 
-        validateEmptyResult(articles, category);
-
         return articles.stream()
                 .map(ArticleResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -60,8 +58,6 @@ public class ArticleQueryApiService implements ArticleQueryApiPort {
         List<Article> articles = articleFindPort
                 .findTop6BySubCategoryOrderByUploadAtDesc(subcategory);
 
-        validateEmptyResult(articles, subcategory);
-
         return articles.stream()
                 .map(ArticleResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -71,12 +67,6 @@ public class ArticleQueryApiService implements ArticleQueryApiPort {
     private void validateCategory(String category) {
         if (!ALLOWED_CATEGORIES.contains(category)) {
             throw new QueryException.InvalidCategoryException("유효하지 않은 카테고리: " + category);
-        }
-    }
-
-    private void validateEmptyResult(List<Article> articles, String category) {
-        if (articles.isEmpty()) {
-            throw new QueryException.CategoryNotFoundException("카테고리 [" + category + "]에 기사가 없습니다");
         }
     }
 }
