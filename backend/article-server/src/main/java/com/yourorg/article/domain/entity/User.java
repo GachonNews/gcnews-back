@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "User")
 @IdClass(UserMapping.class)
 public class User {
     @Id

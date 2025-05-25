@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "article")
+@Table(name = "Article")
 public class Article {
 
     @Id
