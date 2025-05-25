@@ -2,18 +2,16 @@ package com.yourorg.user_info.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
 @Entity
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
 
     public User(String loginId, String password, String name, String email){
@@ -37,12 +35,4 @@ public class User {
     private String name;
 
     private String email;
-
-    // private String gender;
-    // private int age;
-    // @Column(name="join_at")
-    // private String joinAt;
-    // @Column(name="user_img")
-    // @JsonProperty("img")
-    // private String img;
 }

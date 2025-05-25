@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "Summary")  // 테이블명을 "SUMMARY"로 변경 (기존 "NEWS"와 충돌 방지)
+@Table(name = "summary")  // 테이블명을 "SUMMARY"로 변경 (기존 "NEWS"와 충돌 방지)
 public class Summary {
 
     @Id

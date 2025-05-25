@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserJPARepository extends JpaRepository<User, UserMapping> {
     boolean existsByUserIdAndCrawlingId(Long userId, Long crawlingId);
-    @Query("SELECT u.crawlingId FROM User u WHERE u.userId = :userId")
+    @Query("SELECT u.crawlingId FROM user u WHERE u.userId = :userId")
     List<Long> findCrawlingIdsByUserId(Long userId);
 }

@@ -17,9 +17,10 @@ public interface ArticleJPARepository extends JpaRepository<Article, Long> {
   List<Article> findByCrawlingId(Long crawlingId);
   boolean existsByCrawlingId(Long crawlingId);
 
+
   @Modifying
   @Transactional 
-  @Query("UPDATE Article a SET a.views = a.views + 1 WHERE a.crawlingId = :crawlingId")
+  @Query("UPDATE article a SET a.views = a.views + 1 WHERE a.crawlingId = :crawlingId")
   void incrementViewCount(@Param("crawlingId") Long crawlingId);
 
   // 오늘 전체 조회수 1위 (uploadAt이 오늘의 00:00~내일 00:00 사이)
@@ -51,7 +52,7 @@ public interface ArticleJPARepository extends JpaRepository<Article, Long> {
   @Query(value = """
     SELECT a.*,
           CASE WHEN EXISTS (
-            SELECT 1 FROM User u
+            SELECT 1 FROM user u
             WHERE u.user_id = :userId AND u.crawling_id = a.crawling_id
           ) THEN a.views + 1000
           ELSE a.views
@@ -65,7 +66,7 @@ public interface ArticleJPARepository extends JpaRepository<Article, Long> {
           THEN a.upload_at
           ELSE
             CASE WHEN EXISTS (
-              SELECT 1 FROM User u
+              SELECT 1 FROM user u
               WHERE u.user_id = :userId AND u.crawling_id = a.crawling_id
             ) THEN a.views + 1000
             ELSE a.views
