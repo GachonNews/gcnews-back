@@ -87,7 +87,7 @@ public class CrawlingService implements CrawlingTriggerPort {
                             Element dateElem = li.selectFirst("p.txt-date");
                             String dateStr = dateElem != null ? dateElem.text().trim() : null;
                             try {
-                                return dateStr == null ? null : LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+                                return dateStr == null ? null : LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
                             } catch (Exception e) { return null; }
                         }).filter(d -> d != null).min(LocalDateTime::compareTo).orElse(null);
 
@@ -114,7 +114,8 @@ public class CrawlingService implements CrawlingTriggerPort {
                         Elements liList = articleListUl.select("li");
                         if (liList.isEmpty()) break;
 
-                        for (Element li : liList) {
+                        for (int i = liList.size() - 1; i >= 0; i--) {
+                            Element li = liList.get(i);
                             // 제목, 링크, 날짜 등등 추출
                             Element h2 = li.selectFirst("h2.news-tit");
                             Element a = h2 != null ? h2.selectFirst("a") : null;
@@ -125,7 +126,7 @@ public class CrawlingService implements CrawlingTriggerPort {
                             String dateStr = dateElem != null ? dateElem.text().trim() : null;
                             LocalDateTime uploadAt = null;
                             try {
-                                uploadAt = dateStr == null ? null : LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+                                uploadAt = dateStr == null ? null : LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
                             } catch (Exception e) { /* 무시 */ }
 
                             Element img = li.selectFirst("figure.thumb img");
