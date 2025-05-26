@@ -103,7 +103,7 @@ public class CrawlingService implements CrawlingTriggerPort {
                 }
                 if (!foundOldPage) lastPage = page - 1;
                 if (lastPage < 1) lastPage = 1;
-                if (lastPage > 3) lastPage = 3;
+                if (lastPage > 3) lastPage = 1;
 
                 for (int p = lastPage; p >= 1; p--) {
                     String pageUrl = subCategoryUrl + "?page=" + p;
@@ -176,7 +176,7 @@ public class CrawlingService implements CrawlingTriggerPort {
 
                             System.out.println("뉴스 저장: " + title + " | " + uploadAt + " | " + articleLink);
 
-                            Thread.sleep(60 * 1000);
+                            Thread.sleep(30 * 1000);
                         }
                     } catch (Exception e) {
                         break;
