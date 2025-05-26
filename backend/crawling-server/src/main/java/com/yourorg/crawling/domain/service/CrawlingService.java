@@ -114,8 +114,8 @@ public class CrawlingService implements CrawlingTriggerPort {
                         Elements liList = articleListUl.select("li");
                         if (liList.isEmpty()) break;
 
-                        for (Element li : liList) {
-                            // 제목, 링크, 날짜 등등 추출
+                        for (int i = liList.size() - 1; i >= 0; i--) {
+                            Element li = liList.get(i);
                             Element h2 = li.selectFirst("h2.news-tit");
                             Element a = h2 != null ? h2.selectFirst("a") : null;
                             String title = a != null ? a.text().trim() : "(제목 없음)";
@@ -176,7 +176,7 @@ public class CrawlingService implements CrawlingTriggerPort {
 
                             System.out.println("뉴스 저장: " + title + " | " + uploadAt + " | " + articleLink);
 
-                            Thread.sleep(30 * 1000);
+                            Thread.sleep(60 * 1000);
                         }
                     } catch (Exception e) {
                         break;
