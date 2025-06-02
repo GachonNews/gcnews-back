@@ -7,6 +7,9 @@ import com.yourorg.user_info.port.out.persistence.UserWritePort;
 
 import lombok.RequiredArgsConstructor;
 
+
+import com.yourorg.user_info.adapter.in.dto.response.UserResponseDto;
+import com.yourorg.user_info.domain.entity.User;
 import com.yourorg.user_info.adapter.in.dto.response.FriendResponseDto;
 import com.yourorg.user_info.domain.entity.Friend;
 import com.yourorg.user_info.port.in.web.FriendRequestPort;
@@ -19,6 +22,16 @@ public class FriendService implements FriendRequestPort {
     private final UserReadPort readPort;      // 읽기 전용 Port
     private final UserWritePort writePort;    // 쓰기 전용 Port
 
+
+@Override
+    public UserResponseDto getFriend(Long userId) {
+        // userId로 유저 조회, 없으면 예외 발생
+        User u = readPort.findUser(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        // User 엔티티를 Response DTO로 변환해서 반환
+        return UserResponseDto.fromEntity(u);
+    }
+    
     @Override
     public List<FriendResponseDto> getFriends(Long userId) {
         // userId의 친구 목록을 조회해서 FriendResponseDto 리스트로 반환
