@@ -80,22 +80,23 @@ public class FriendRequestAdapter {
             @RequestHeader("Authorization") String token) {
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         List<FriendResponseDto> list = service.getFriends(Long.valueOf(userId));
+        OurApiResponse<List<FriendResponseDto>> response;
         if (list.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(new OurApiResponse<>("success", List.of(), "친구가 없습니다."));
+            response = new OurApiResponse<>("success", List.of(), "친구가 없습니다.");
+        } else {
+            response = new OurApiResponse<>("success", list, null);
         }
-        return ResponseEntity.ok(new OurApiResponse<>("success", list, null));
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/{friendId}")
     public ResponseEntity<OurApiResponse<UserResponseDto>> getFriend(
             @RequestHeader("Authorization") String token,
             @PathVariable("friendId") Long friendId) {
-        //String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
         UserResponseDto userDto = service.getFriend(Long.valueOf(friendId));
         if (userDto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new OurApiResponse<>("fail", null, "해당 유저를 찾을 수 없습니다."));
+            return ResponseEntity.ok(new OurApiResponse<>("fail", null, "해당 유저를 찾을 수 없습니다."));
         }
         return ResponseEntity.ok(
             new OurApiResponse<>("success", userDto, null)
@@ -155,7 +156,7 @@ public class FriendRequestAdapter {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(new OurApiResponse<>("success", dto, null));
     }
-
+    
     @Operation(summary = "친구 삭제",
     security = @SecurityRequirement(name = "bearerAuth") )
     @ApiResponses({

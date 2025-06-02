@@ -47,4 +47,9 @@ public class UserPersistenceReadAdapter implements UserReadPort {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend not found")
             );
     }
+
+    @Override
+    public Optional<User> findFriend(Long friendId) {
+        return userRepository.findByUserId(friendId);
+    }
 }
