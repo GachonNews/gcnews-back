@@ -1,5 +1,6 @@
 package com.yourorg.user_info.adapter.in.web;
 
+import com.yourorg.user_info.adapter.in.dto.response.UserResponseDto;
 import com.yourorg.user_info.adapter.in.dto.response.FriendResponseDto;
 import com.yourorg.user_info.adapter.in.dto.response.OurApiResponse;
 import com.yourorg.user_info.port.in.web.FriendRequestPort;
@@ -84,6 +85,21 @@ public class FriendRequestAdapter {
                 .body(new OurApiResponse<>("success", List.of(), "친구가 없습니다."));
         }
         return ResponseEntity.ok(new OurApiResponse<>("success", list, null));
+    }
+
+    @GetMapping("/{friendId}")
+    public ResponseEntity<OurApiResponse<UserResponseDto>> getFriend(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("friendId") Long friendId) {
+        //String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
+        UserResponseDto userDto = service.getFriend(Long.valueOf(friendId));
+        if (userDto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new OurApiResponse<>("fail", null, "해당 유저를 찾을 수 없습니다."));
+        }
+        return ResponseEntity.ok(
+            new OurApiResponse<>("success", userDto, null)
+        );
     }
 
     @Operation(summary = "친구 추가",
