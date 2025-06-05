@@ -11,4 +11,5 @@ public interface UserReadPort {
     Optional<User> findFriend(Long friendId); //friendId에 해당하는 유저정보 반환
     List<Friend> findFriendList(Long userId); // userId의 친구 목록 조회
     Friend findDeleteFriend(Long userId, Long friendId); // userId와 friendId로 삭제할 친구 조회
+    Optional<User> findUser(String loginId); // loginId로 유저 조회
 }

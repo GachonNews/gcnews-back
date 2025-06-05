@@ -7,7 +7,7 @@ import com.yourorg.user_info.port.out.persistence.UserWritePort;
 
 import lombok.RequiredArgsConstructor;
 
-
+import com.yourorg.user_info.exception.UserNotFoundException;
 import com.yourorg.user_info.adapter.in.dto.response.UserResponseDto;
 import com.yourorg.user_info.domain.entity.User;
 import com.yourorg.user_info.adapter.in.dto.response.FriendResponseDto;
@@ -15,6 +15,7 @@ import com.yourorg.user_info.domain.entity.Friend;
 import com.yourorg.user_info.port.in.web.FriendRequestPort;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,14 +42,22 @@ public class FriendService implements FriendRequestPort {
     }
 
     @Override
-    public FriendResponseDto addFriend(Long userId, FriendResponseDto friendDto) {
-        // userId와 friendId로 새로운 Friend 생성 후 저장
-        Long friendId = friendDto.getFriendId();
-        Friend f = new Friend(userId, friendId);
-        Friend saved = writePort.saveFriend(f);
-        // 저장된 결과를 FriendResponseDto로 반환
+    public FriendResponseDto addFriend(Long userId, String loginId) {
+        // 1. Optional 처리해서 값이 없으면 null 반환
+        Optional<User> friendOpt = readPort.findUser(loginId);
+        if (friendOpt.isEmpty()) {
+            return null; // <-- 친구가 없으면 null 반환
+        }
+
+        User friendUser = friendOpt.get();
+        // 2. Friend 생성 및 저장
+        Friend newFriend = new Friend(userId, friendUser.getUserId());
+        Friend saved = writePort.saveFriend(newFriend);
+
+        // 3. DTO 반환
         return new FriendResponseDto(saved.getUserId(), saved.getFriendId());
     }
+
 
     @Override
     @Transactional

@@ -26,6 +26,11 @@ public class UserPersistenceReadAdapter implements UserReadPort {
     private final UserJPARepository userRepository;
     private final FriendJPARepository friendRepository;
 
+
+    @Override
+    public Optional<User> findUser(String loginId) {
+        return userRepository.findByLoginId(loginId);
+    }
     // User 읽기
     @Override
     public Optional<User> findUser(Long userId) {

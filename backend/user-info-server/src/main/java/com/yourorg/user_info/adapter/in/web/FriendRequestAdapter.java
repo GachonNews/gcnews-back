@@ -147,8 +147,9 @@ public class FriendRequestAdapter {
     public ResponseEntity<OurApiResponse<FriendResponseDto>> addFriend(
             @RequestHeader("Authorization") String token,
             @RequestBody FriendResponseDto friendDto) {
+        String loginId = friendDto.getFriendLoginId();
         String userId = JwtUtil.getUserIdFromToken(token.replace("Bearer ", ""), secretKey);
-        FriendResponseDto dto = service.addFriend(Long.valueOf(userId), friendDto);
+        FriendResponseDto dto = service.addFriend(Long.valueOf(userId), loginId);
         if (dto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new OurApiResponse<>("fail", null, "친구 추가에 실패했습니다."));
