@@ -14,7 +14,6 @@ eureka:
   server:
     wait-time-in-ms-when-sync-empty: 0
 
-# (선택) Eureka 콘솔 한글 깨짐 방지
 management:
   endpoints:
     web:
