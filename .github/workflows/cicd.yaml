@@ -4,7 +4,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ "main" ]   # main 브랜치 push 시 실행
-  workflow_dispatch:       # 수동 실행도 가능
+  workflow_dispatch:      
 
 jobs:
   build-and-deploy:
