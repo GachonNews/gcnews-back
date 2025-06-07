@@ -75,7 +75,7 @@ public class ArticleApiAdapter {
                                 "views": 10452
                             }
                         ],
-                        "message": "전송 완료"
+                        "message": "전송완료"
                     }
                     """
                 )
