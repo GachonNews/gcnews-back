@@ -9,6 +9,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: Vmserver 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -19,7 +20,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /home/ubuntu/your-project
-            git pull
+            cd gcnews-back
+            git pull origin main
+            cd backend
+            ./build-all.sh
             docker compose down
             docker compose up -d --build
