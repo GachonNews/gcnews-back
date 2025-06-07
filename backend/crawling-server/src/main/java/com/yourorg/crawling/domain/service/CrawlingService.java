@@ -34,7 +34,7 @@ public class CrawlingService implements CrawlingTriggerPort {
     private final ArticleRequestPort articleRequestPort;
 
     private static final String[] MAIN_CATEGORIES = {
-        "economy", "financial-market", "industry", "distribution", "it"//, "international"
+        "economy", "financial-market", "industry", "distribution", "international"
     };
 
     @Override

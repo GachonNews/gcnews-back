@@ -36,13 +36,24 @@ public interface ArticleJPARepository extends JpaRepository<Article, Long> {
 
   // 오늘 카테고리별 조회수 1위
   @Query(value = """
-      SELECT *
-      FROM article a
-      WHERE a.category = :category
-        AND SUBSTRING(a.upload_at, 1, 10) = :today
-      ORDER BY a.views DESC
-      LIMIT 1
-      """, nativeQuery = true)
+    (SELECT *
+     FROM article a
+     WHERE a.category = :category
+       AND SUBSTRING(a.upload_at, 1, 10) = :today
+     ORDER BY a.views DESC
+     LIMIT 1)
+    UNION ALL
+    (SELECT *
+     FROM article a
+     WHERE a.category = :category
+       AND SUBSTRING(a.upload_at, 1, 10) <> :today
+       AND SUBSTRING(a.upload_at, 1, 10) = (
+         SELECT MAX(SUBSTRING(b.upload_at, 1, 10)) FROM article b WHERE b.category = :category
+       )
+     ORDER BY a.views DESC
+     LIMIT 1)
+    LIMIT 1
+    """, nativeQuery = true)
   Optional<Article> findTopByCategoryAndUploadAtTodayOrderByViewsDesc(
       @Param("category") String category,
       @Param("today") String today

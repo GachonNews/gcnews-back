@@ -35,7 +35,7 @@ public class ArticleApiAdapter {
     private String secretKey;
 
     private static final Set<String> VALID_CATEGORIES = Set.of(
-        "economy", "financial-market", "industry", "distribution", "it"
+        "economy", "financial-market", "industry", "distribution", "international"
     );
 
     private static final Map<String, List<String>> CATEGORY_MAP = Map.of(
@@ -43,7 +43,7 @@ public class ArticleApiAdapter {
         "financial-market", List.of("금융정책", "은행", "보험·2금융", "가상자산·핀테크", "재테크"),
         "industry", List.of("반도체·전자", "자동차·배터리", "조선·해운", "철강·화학", "로봇·미래"),
         "distribution", List.of("백화점·마트", "편의점·슈퍼", "아울렛·쇼핑몰", "e커머스", "F&B"),
-        "it", List.of("과학", "바이오", "모바일", "인터넷", "통신·뉴미디어")
+        "international", List.of("미국", "캐나다·중남미", "일본", "중국", "인도·동남아·호주")
     );
 
     @Operation(
